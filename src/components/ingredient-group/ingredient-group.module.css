@@ -1,0 +1,22 @@
+.header {
+	margin: 0 0 calc(var(--offset-base-size) * 6);
+}
+.ingredient {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-content: flex-start;
+	justify-content: flex-start;
+}
+.box {
+	display: inline-block;
+	padding: 0;
+	list-style: none;
+}
+.box:nth-child(even) {
+	margin: 0 0 0 calc(var(--offset-base-size) * 6);
+}
+.box:nth-child(odd) {
+	margin: 0 0 0 calc(var(--offset-base-size) * 4);
+}

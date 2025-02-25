@@ -1,0 +1,19 @@
+.mainContainer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+.content{
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: flex-start;
+}
+.leftBox{
+	width: 600px;
+	margin: 0 calc(var(--offset-base-size) * 10) 0 0;
+}
+.rightBox{
+	width: 600px;
+}

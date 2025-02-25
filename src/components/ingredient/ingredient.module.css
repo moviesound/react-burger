@@ -1,0 +1,22 @@
+.header {
+	display: flex;
+}
+.box {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	margin: 0 0 calc(var(--offset-base-size) * 8);
+	position: relative;
+	cursor: pointer;
+}
+.image {
+	margin: 0 calc(var(--offset-base-size) * 4) var(--offset-base-size);
+}
+.name {
+	text-align: center;
+	height: 48px;
+	text-wrap: wrap;
+	max-width: 256px;
+	padding: var(--offset-base-size) calc(var(--offset-base-size) * 2);
+}

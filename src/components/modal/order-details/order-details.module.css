@@ -1,0 +1,35 @@
+.container {
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+}
+.orderNumber {
+	margin-bottom: calc(var(--offset-base-size) * 8);
+
+}
+
+.label {
+	margin-bottom: calc(var(--offset-base-size) * 15);
+
+}
+
+.approve {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+	height: 120px;
+	width: 120px;
+	background-color: #7a1b6b17;
+	border-radius: 45px;
+}
+.textStatus1 {
+	margin-top: calc(var(--offset-base-size) * 15);
+}
+.textStatus2{
+	margin: calc(var(--offset-base-size) * 2) 0 calc(var(--offset-base-size) * 30);
+}
