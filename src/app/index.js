@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import AppHeader from '@components/app-header/app-header';
-import BurgerConstructor from '@components/burger-constructor/burger-constructor';
-import BurgerIngredients from '@components/burger-ingredients/burger-ingredients';
+import AppHeader from '../components/app-header/app-header';
+import BurgerConstructor from '../components/burger-constructor/burger-constructor';
+import BurgerIngredients from '../components/burger-ingredients/burger-ingredients';
 import style from './app.module.scss';
-import Modal from '@components/modal/modal';
-import { createPortal } from 'react-dom';
+import Modal from '../components/modal/modal';
 
 export const App = () => {
 	//ingredients
