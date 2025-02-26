@@ -52,7 +52,7 @@ export const App = () => {
 	});
 
 	// modal object for DOM
-	const modal = createPortal(
+	const modal = (
 		<Modal
 			overlayRef={overlayRef}
 			closeBtnRef={closeBtnRef}
@@ -61,9 +61,7 @@ export const App = () => {
 			handler={modalHandle}
 			closeModal={closeModal}>
 			{modalContent}
-		</Modal>,
-		document.getElementById('modal-root')
-	);
+		</Modal>);
 
 	return (
 		<>

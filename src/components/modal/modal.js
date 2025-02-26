@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styles from './modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import ModalOverlay from './modal-overlay';
+import { createPortal } from 'react-dom';
 
 const Modal = (props) => {
 	//addlistener close
@@ -34,7 +35,7 @@ const Modal = (props) => {
 		}
 	};
 
-	return (
+	return createPortal(
 		<ModalOverlay overlayRef={props.overlayRef}>
 			<section className={styles.modal} ref={props.modalRef}>
 				<h2 className={`${styles.header} text text_type_main-large`}>
@@ -45,7 +46,7 @@ const Modal = (props) => {
 				</h2>
 				<div className={styles.content}>{props.children}</div>
 			</section>
-		</ModalOverlay>
+		</ModalOverlay>, document.getElementById('modal-root')
 	);
 };
 

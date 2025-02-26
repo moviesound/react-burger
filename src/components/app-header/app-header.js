@@ -15,12 +15,16 @@ const AppHeader = () => {
 					<nav className={appStyles.nav}>
 						<ul className={appStyles.leftMenu}>
 							<li className='text text_type_main-default'>
-								<BurgerIcon type='primary' />
-								<div className={appStyles.menuText}>Конструктор</div>
+								<a href="#">
+									<BurgerIcon type='primary' />
+									<div className={appStyles.menuText}>Конструктор</div>
+								</a>
 							</li>
 							<li className='text text_type_main-default text_color_inactive'>
-								<ListIcon type='secondary' />
-								<div className={appStyles.menuText}>Лента заказов</div>
+								<a href="#">
+									<ListIcon type='secondary' />
+									<div className={appStyles.menuText}>Лента заказов</div>
+								</a>
 							</li>
 						</ul>
 						<div className={appStyles.logoMenu}>
@@ -28,8 +32,10 @@ const AppHeader = () => {
 						</div>
 						<ul className={appStyles.rightMenu}>
 							<li className='text text_type_main-default text_color_inactive'>
-								<ProfileIcon type='secondary' />
-								<div className={appStyles.menuText}>Личный кабинет</div>
+								<a href="#">
+									<ProfileIcon type='secondary' />
+									<div className={appStyles.menuText}>Личный кабинет</div>
+								</a>
 							</li>
 						</ul>
 					</nav>
