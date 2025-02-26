@@ -15,13 +15,13 @@ const AppHeader = () => {
 					<nav className={appStyles.nav}>
 						<ul className={appStyles.leftMenu}>
 							<li className='text text_type_main-default'>
-								<a href="#">
+								<a href="#" className={appStyles.ref}>
 									<BurgerIcon type='primary' />
 									<div className={appStyles.menuText}>Конструктор</div>
 								</a>
 							</li>
 							<li className='text text_type_main-default text_color_inactive'>
-								<a href="#">
+								<a href="#" className={appStyles.ref}>
 									<ListIcon type='secondary' />
 									<div className={appStyles.menuText}>Лента заказов</div>
 								</a>
@@ -32,7 +32,7 @@ const AppHeader = () => {
 						</div>
 						<ul className={appStyles.rightMenu}>
 							<li className='text text_type_main-default text_color_inactive'>
-								<a href="#">
+								<a href="#" className={appStyles.ref}>
 									<ProfileIcon type='secondary' />
 									<div className={appStyles.menuText}>Личный кабинет</div>
 								</a>
