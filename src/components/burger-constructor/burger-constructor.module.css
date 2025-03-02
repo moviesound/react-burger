@@ -12,3 +12,7 @@
 	height: 100%;
 	overflow: hidden;
 }
+.scrollerStyle {
+	overflow-y: auto;
+	overflow-x: hidden;
+}

@@ -47,25 +47,26 @@ const BurgerConstructor = (props) => {
 		};
 	});
 
+	var infoBun = useRef(null);
+	var infoSauce = useRef(null);
+	var infoBunContent = useRef(null);
+	var infoSauceContent = useRef(null);
+
 	const scrollerHandler = (e) => {
-		var infoContainer = e.currentTarget.getBoundingClientRect();
-		var infoBun = document.getElementById('bun').getBoundingClientRect();
-		var infoBunContent = document
-			.getElementById('bun-content')
-			.getBoundingClientRect();
-		var infoSauce = document.getElementById('sauce').getBoundingClientRect();
-		var infoSauceContent = document
-			.getElementById('sauce-content')
-			.getBoundingClientRect();
+		var _infoContainer = e.currentTarget.getBoundingClientRect();
+		var _infoSauce = infoSauce.current.getBoundingClientRect();
+		var _infoBun = infoBun.current.getBoundingClientRect();
+		var _infoBunContent = infoBunContent.current.getBoundingClientRect();
+		var _infoSauceContent = infoSauceContent.current.getBoundingClientRect();
 		if (
-			infoBun.bottom > infoContainer.top ||
-			infoBunContent.bottom > infoContainer.top + 250
+			_infoBun.bottom > _infoContainer.top ||
+			_infoBunContent.bottom > _infoContainer.top + 50
 		) {
 			setCurrentTab('bun');
 		} else if (
-			(infoSauce.top > infoContainer.top &&
-				infoSauce.top < infoContainer.top + 250) ||
-			infoSauceContent.bottom > infoContainer.top + 250
+			(_infoSauce.top > _infoContainer.top &&
+				_infoSauce.top < _infoContainer.top + 50) ||
+			_infoSauceContent.bottom > _infoContainer.top + 50
 		) {
 			setCurrentTab('sauce');
 		} else {
@@ -96,14 +97,14 @@ const BurgerConstructor = (props) => {
 				ref={burgerConstructorContent}
 				style={{
 					height: heightConstructor,
-					overflowY: 'auto',
-					overflowX: 'hidden',
 				}}
-				className='custom-scroll'>
+				className={`custom-scroll ${constructorStyles.scrollerStyle}`}>
 				<IngredientGroup
 					ingredients={props.ingredients.filter((ingredient) => {
 						return ingredient.type == 'bun';
 					})}
+					refId={infoBun}
+					refIdContent={infoBunContent}
 					type='bun'
 					openModal={props.openModal}
 				/>
@@ -111,6 +112,8 @@ const BurgerConstructor = (props) => {
 					ingredients={props.ingredients.filter((ingredient) => {
 						return ingredient.type == 'sauce';
 					})}
+					refId={infoSauce}
+					refIdContent={infoSauceContent}
 					type='sauce'
 					openModal={props.openModal}
 				/>
@@ -127,19 +130,21 @@ const BurgerConstructor = (props) => {
 };
 
 burgerIngredients.propTypes = {
-	ingredients: PropTypes.arrayOf(PropTypes.shape({
-		_id: PropTypes.string.isRequired,
-		calories: PropTypes.number.isRequired,
-		carbohydrates: PropTypes.number.isRequired,
-		fat: PropTypes.number.isRequired,
-		proteins: PropTypes.number.isRequired,
-		price: PropTypes.number.isRequired,
-		type: PropTypes.string.isRequired,
-		image: PropTypes.string.isRequired,
-		image_large: PropTypes.string.isRequired,
-		image_mobile: PropTypes.string.isRequired,
-		name: PropTypes.string.isRequired,
-	})).isRequired,
+	ingredients: PropTypes.arrayOf(
+		PropTypes.shape({
+			_id: PropTypes.string.isRequired,
+			calories: PropTypes.number.isRequired,
+			carbohydrates: PropTypes.number.isRequired,
+			fat: PropTypes.number.isRequired,
+			proteins: PropTypes.number.isRequired,
+			price: PropTypes.number.isRequired,
+			type: PropTypes.string.isRequired,
+			image: PropTypes.string.isRequired,
+			image_large: PropTypes.string.isRequired,
+			image_mobile: PropTypes.string.isRequired,
+			name: PropTypes.string.isRequired,
+		})
+	).isRequired,
 	openModal: PropTypes.func.isRequired,
 };
 

@@ -9,14 +9,18 @@ const IngredientGroup = (props) => {
 		<>
 			<h2
 				className={`${styles.header} text text_type_main-medium`}
-				id={props.type}>
+				id={props.type}
+				ref={props.refId}>
 				{props.type == 'bun'
 					? 'Булки'
 					: props.type == 'sauce'
 					? 'Соусы'
 					: 'Начинки'}
 			</h2>
-			<section className={styles.ingredient} id={`${props.type}-content`}>
+			<section
+				className={styles.ingredient}
+				id={`${props.type}-content`}
+				ref={props.refIdContent}>
 				{props.ingredients.map((ingredient) => (
 					<ul className={styles.box} key={ingredient._id}>
 						<Ingredient
@@ -32,20 +36,24 @@ const IngredientGroup = (props) => {
 };
 
 IngredientGroup.propTypes = {
-	ingredients: PropTypes.arrayOf(PropTypes.shape({
-		_id: PropTypes.string.isRequired,
-		calories: PropTypes.number.isRequired,
-		carbohydrates: PropTypes.number.isRequired,
-		fat: PropTypes.number.isRequired,
-		proteins: PropTypes.number.isRequired,
-		price: PropTypes.number.isRequired,
-		type: PropTypes.string.isRequired,
-		image: PropTypes.string.isRequired,
-		image_large: PropTypes.string.isRequired,
-		image_mobile: PropTypes.string.isRequired,
-		name: PropTypes.string.isRequired,
-	})).isRequired,
+	ingredients: PropTypes.arrayOf(
+		PropTypes.shape({
+			_id: PropTypes.string.isRequired,
+			calories: PropTypes.number.isRequired,
+			carbohydrates: PropTypes.number.isRequired,
+			fat: PropTypes.number.isRequired,
+			proteins: PropTypes.number.isRequired,
+			price: PropTypes.number.isRequired,
+			type: PropTypes.string.isRequired,
+			image: PropTypes.string.isRequired,
+			image_large: PropTypes.string.isRequired,
+			image_mobile: PropTypes.string.isRequired,
+			name: PropTypes.string.isRequired,
+		})
+	).isRequired,
 	openModal: PropTypes.func.isRequired,
+	refId: PropTypes.object,
+	refIdContent: PropTypes.object,
 };
 
 export default IngredientGroup;

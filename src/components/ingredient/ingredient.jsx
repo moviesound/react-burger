@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import ingredientStyles from './ingredient.module.css';
 import { Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
-import OrderDetails from '../modal/order-details/order-details';
 import IngredientDetails from '../modal/ingredient-details/ingredient-details';
 
 const Ingredient = (props) => {

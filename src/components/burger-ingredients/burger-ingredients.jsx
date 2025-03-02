@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import styles from './burger-ingredients.module.css';
+import React, { useEffect, useState, useRef } from "react";
+import styles from "./burger-ingredients.module.css";
 import {
 	ConstructorElement,
 	DragIcon,
@@ -7,7 +7,7 @@ import {
 import PropTypes from 'prop-types';
 import ButtonOrder from '../button-order/button-order';
 
-const burgerIngredients = (props) => {
+const BurgerIngredients = (props) => {
 	const [heightIngredients, setHeightIngredients] = useState(0);
 	const [maxHeightIngredients, setMaxHeightIngredients] = useState(1000);
 	const burgerIngredientsContent = useRef(null);
@@ -102,20 +102,22 @@ const burgerIngredients = (props) => {
 	);
 };
 
-burgerIngredients.propTypes = {
-	ingredients: PropTypes.arrayOf(PropTypes.shape({
-		_id: PropTypes.string.isRequired,
-		calories: PropTypes.number.isRequired,
-		carbohydrates: PropTypes.number.isRequired,
-		fat: PropTypes.number.isRequired,
-		proteins: PropTypes.number.isRequired,
-		price: PropTypes.number.isRequired,
-		type: PropTypes.string.isRequired,
-		image: PropTypes.string.isRequired,
-		image_large: PropTypes.string.isRequired,
-		image_mobile: PropTypes.string.isRequired,
-		name: PropTypes.string.isRequired,
-	})).isRequired,
+BurgerIngredients.propTypes = {
+	ingredients: PropTypes.arrayOf(
+		PropTypes.shape({
+			_id: PropTypes.string.isRequired,
+			calories: PropTypes.number.isRequired,
+			carbohydrates: PropTypes.number.isRequired,
+			fat: PropTypes.number.isRequired,
+			proteins: PropTypes.number.isRequired,
+			price: PropTypes.number.isRequired,
+			type: PropTypes.string.isRequired,
+			image: PropTypes.string.isRequired,
+			image_large: PropTypes.string.isRequired,
+			image_mobile: PropTypes.string.isRequired,
+			name: PropTypes.string.isRequired,
+		})
+	).isRequired,
 	openModal: PropTypes.func.isRequired,
 };
-export default burgerIngredients;
+export default BurgerIngredients;

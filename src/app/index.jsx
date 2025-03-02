@@ -11,7 +11,12 @@ export const App = () => {
 	//get ingredients
 	useEffect(() => {
 		fetch('https://norma.nomoreparties.space/api/ingredients')
-			.then((res) => res.json())
+			.then((res) => {
+				if (!res.ok) {
+					throw new Error(`Something went wrong: ${res.status}`);
+				}
+				return res.json();
+			})
 			.then((ingredients) => setIngredients(ingredients.data))
 			.catch((err) => console.log(err));
 	}, []);
@@ -36,7 +41,7 @@ export const App = () => {
 		//show modal
 		setModalIsVisible(true);
 		return '';
-	});
+	}, []);
 
 	//close modal event
 	const closeModal = useCallback(() => {
@@ -48,7 +53,7 @@ export const App = () => {
 		});
 		//hide modal
 		setModalIsVisible(false);
-	});
+	}, [closeBtnRef, overlayRef, modalRef]);
 
 	// modal object for DOM
 	const modal = (
@@ -60,7 +65,8 @@ export const App = () => {
 			handler={modalHandle}
 			closeModal={closeModal}>
 			{modalContent}
-		</Modal>);
+		</Modal>
+	);
 
 	return (
 		<>
