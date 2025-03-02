@@ -1,0 +1,35 @@
+.container {
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+}
+.image {
+
+}
+.description {
+	margin: calc(var(--offset-base-size) * 4) 0 calc(var(--offset-base-size) * 8);
+}
+.infoContainer {
+	text-align: center;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: center;
+	align-content: flex-start;
+	gap: calc(var(--offset-base-size) * 5);
+	margin-bottom: calc(var(--offset-base-size) * 15);
+}
+.infoBox{
+	width: 112px;
+	height: 56px;
+	display: flex;
+	flex-direction: column;
+	align-content: stretch;
+	justify-content: stretch;
+}
+.infoBox:first-child {
+	width: 120px;
+}

@@ -1,0 +1,18 @@
+.header{
+	padding: calc(var(--offset-base-size) * 10) 0 calc(var(--offset-base-size) * 5);
+}
+.nav {
+	display: flex;
+	flex-direction: row;
+	justify-content: stretch;
+	align-items: center;
+	margin: 0 0 calc(var(--offset-base-size) * 10);
+}
+#burger-constructor-content {
+	height: 100%;
+	overflow: hidden;
+}
+.scrollerStyle {
+	overflow-y: auto;
+	overflow-x: hidden;
+}

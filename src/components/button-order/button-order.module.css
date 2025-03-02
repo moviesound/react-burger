@@ -1,0 +1,12 @@
+.container {
+	width: 568px;
+	display: flex;
+	justify-content: right;
+	text-align: center;
+	align-items: center;
+	margin: calc(var(--offset-base-size) * 10) 0 0 0;
+}
+.sum {
+	margin: 0 calc(var(--offset-base-size) * 10) 0 0;
+	text-align: right;
+}
