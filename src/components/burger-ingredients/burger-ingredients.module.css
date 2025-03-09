@@ -1,31 +1,18 @@
-.section {
+.header{
+	padding: calc(var(--offset-base-size) * 10) 0 calc(var(--offset-base-size) * 5);
+}
+.nav {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	justify-content: stretch;
 	align-items: center;
-	justify-content: center;
-	margin-top: calc(var(--offset-base-size) * 25);
+	margin: 0 0 calc(var(--offset-base-size) * 10);
 }
-
-.list {
-	display: flex;
-	flex-direction: column;
-	padding: 0;
-	margin: 0;
-	gap: 10px;
-	list-style: none;
+#burger-constructor-content {
+	height: 100%;
+	overflow: hidden;
 }
-.moveBox {
-	text-align: left;
-	display: inline-block;
-	width: calc(var(--offset-base-size) * 8);
-	margin: 0;
-	padding: 0;
-}
-
-.topIngredient {
-	padding: 0 0 10px calc(var(--offset-base-size) * 6);
-}
-
-.bottomIngredient {
-	padding: 10px 0 0 calc(var(--offset-base-size) * 6);
+.scrollerStyle {
+	overflow-y: auto;
+	overflow-x: hidden;
 }
