@@ -59,7 +59,6 @@ export const constructorReducer = (state = constructorInitialState, action) => {
 			};
 		}
 		case SORT_INGREDIENTS: {
-			console.log(state);
 			return {
 				...state,
 				ingredientList: action.ingredients,

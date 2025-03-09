@@ -3,9 +3,9 @@ import {
 	ConstructorElement,
 	DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import React, { memo, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import PropTypes from 'prop-types';
 
 export const ConstructorIngredient = memo(function ConstructorIngredient({
 	index,
@@ -17,6 +17,9 @@ export const ConstructorIngredient = memo(function ConstructorIngredient({
 }) {
 	const ref = useRef(null);
 	const [originalIndex, setOriginalIndex] = useState(index);
+	useEffect(() => {
+		setOriginalIndex(index);
+	}, [index, moveIngredient]);
 	const [{ isDragging }, drag] = useDrag(
 		() => ({
 			type: 'sortable',
@@ -100,3 +103,25 @@ export const ConstructorIngredient = memo(function ConstructorIngredient({
 		</li>
 	);
 });
+
+ConstructorIngredient.propTypes = {
+	ingredient: PropTypes.shape({
+		_id: PropTypes.string.isRequired,
+		calories: PropTypes.number.isRequired,
+		carbohydrates: PropTypes.number.isRequired,
+		fat: PropTypes.number.isRequired,
+		proteins: PropTypes.number.isRequired,
+		price: PropTypes.number.isRequired,
+		type: PropTypes.string.isRequired,
+		image: PropTypes.string.isRequired,
+		image_large: PropTypes.string.isRequired,
+		image_mobile: PropTypes.string.isRequired,
+		name: PropTypes.string.isRequired,
+		count: PropTypes.number,
+	}).isRequired,
+	index: PropTypes.number.isRequired,
+	id: PropTypes.number.isRequired,
+	removeIngredient: PropTypes.func.isRequired,
+	moveIngredient: PropTypes.func.isRequired,
+	notBunSelectedClass: PropTypes.string,
+};
