@@ -1,0 +1,12 @@
+.moveBox {
+	text-align: left;
+	display: inline-block;
+	width: calc(var(--offset-base-size) * 8);
+	margin: 0;
+	padding: 0;
+}
+.ownelement {
+	border-radius: var(--common-border-radius-s);
+	display: inline-block;
+	width: 534px;
+}

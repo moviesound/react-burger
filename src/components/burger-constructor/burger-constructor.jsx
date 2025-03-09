@@ -1,151 +1,260 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import constructorStyles from './burger-constructor.module.css';
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import IngredientGroup from '../ingredient-group/ingredient-group';
-import burgerIngredients from '../burger-ingredients/burger-ingredients';
-import PropTypes from 'prop-types';
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
+import styles from './burger-constructor.module.css';
+import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
+import ButtonOrder from '../button-order/button-order';
+import { useDispatch, useSelector } from 'react-redux';
+import { useDrop } from 'react-dnd';
+import {
+	addIngredientToConstructor,
+	REMOVE_INGREDIENT,
+	SORT_INGREDIENTS,
+} from '../../services/actions/constructor';
+import { ConstructorIngredient } from './constructor-ingredient/constructor-ingredient';
 
-const BurgerConstructor = (props) => {
-	//Tabs
-	const [currentTab, setCurrentTab] = useState('bun');
-	const activateTab = useCallback((tabId) => {
-		setCurrentTab(tabId);
-		document.querySelector('#' + tabId).scrollIntoView({ behavior: 'smooth' });
-	}, []);
-
-	//content Ref for scrolling and resizing events
+const BurgerConstructor = () => {
+	const dispatch = useDispatch();
+	//local component variables
+	const [height, setHeight] = useState(0);
+	const [maxHeight, setMaxHeight] = useState(1000);
 	const burgerConstructorContent = useRef(null);
-	//height of scrolling element: must be changed at resizing of window
-	const [heightConstructor, setHeightConstructor] = useState(0);
+	//ingredients and buns data
+	const ingredients = useSelector((state) => {
+		return state.ingredientsReducer.ingredients;
+	});
+	const bunIds = useSelector((state) => {
+		return state.ingredientsReducer.bunIds;
+	});
+	const ingredientList = useSelector((state) => {
+		return state.constructorReducer.ingredientList;
+	});
+	const bun = useSelector((state) => {
+		return state.constructorReducer.bun;
+	});
+
+	//drag-drop with animation
+	const [{ isHoverTopBun, canDropTopBun }, bunTargetTop] = useDrop({
+		accept: 'bun',
+		drop(item) {
+			dispatch(addIngredientToConstructor(item, ingredients, bunIds, 'bun'));
+		},
+		collect: (monitor) => ({
+			isHoverTopBun: monitor.isOver(),
+			canDropTopBun: monitor.canDrop(),
+		}),
+	});
+	const [{ isHoverBottomBun, canDropBottomBun }, bunTargetBottom] = useDrop({
+		accept: 'bun',
+		drop(item) {
+			dispatch(addIngredientToConstructor(item, ingredients, bunIds, 'bun'));
+		},
+		collect: (monitor) => ({
+			isHoverBottomBun: monitor.isOver(),
+			canDropBottomBun: monitor.canDrop(),
+		}),
+	});
+
+	const bunSelectedTopClass =
+		isHoverTopBun && canDropTopBun
+			? styles.active
+			: canDropBottomBun || canDropTopBun
+			? styles.hovered
+			: styles.normal;
+	const bunSelectedBottomClass =
+		isHoverBottomBun && canDropBottomBun
+			? styles.active
+			: canDropBottomBun || canDropTopBun
+			? styles.hovered
+			: styles.normal;
+
+	const [{ isHoverNotBun, canDropNotBun }, notBunTarget] = useDrop({
+		accept: 'not-bun',
+		drop(item) {
+			dispatch(
+				addIngredientToConstructor(item, ingredients, bunIds, 'not-bun')
+			);
+		},
+		collect: (monitor) => ({
+			isHoverNotBun: monitor.isOver(),
+			canDropNotBun: monitor.canDrop(),
+		}),
+	});
+	const notBunSelectedClass =
+		isHoverNotBun && canDropNotBun
+			? styles.active
+			: canDropNotBun
+			? styles.hovered
+			: styles.normal;
+	//function for removing ingredient from list
+	const removeIngredient = useCallback(
+		(ingredient, index) => {
+			dispatch({
+				type: REMOVE_INGREDIENT,
+				ingredient: ingredient,
+				index: index,
+			});
+		},
+		[ingredientList]
+	);
+	const moveIngredient = useCallback(
+		(dragIndex, hoverIndex) => {
+			const items = [];
+			ingredientList.map((ingredient, index) => {
+				items[index] = Object.assign(ingredient);
+			});
+			const dragItem = Object.assign(items[dragIndex]);
+			items.splice(dragIndex, 1);
+			items.splice(hoverIndex, 0, dragItem);
+			dispatch({ type: SORT_INGREDIENTS, ingredients: items });
+		},
+		[ingredientList, dispatch]
+	);
+
+	//ingredients content must be changed only at resizing (height, maxHeight change), dragging (styles changing),
+	//dropping (adding ingredients, buns), removing ingredients/buns
+	const content = useMemo(() => {
+		const classEmpty = `${styles.emptyIngredient} constructor-element__row text text_type_main-small`;
+		return (
+			<>
+				{bun ? (
+					<div className={`${styles.topIngredient}`} ref={bunTargetTop}>
+						<div
+							className={`${bunSelectedTopClass} constructor-element_pos_top`}>
+							<ConstructorElement
+								type='top'
+								isLocked={true}
+								text={bun.name}
+								price={bun.price}
+								thumbnail={bun.image_mobile}
+							/>
+						</div>
+					</div>
+				) : (
+					<div className={`${styles.topIngredient}`} ref={bunTargetTop}>
+						<div
+							className={`${bunSelectedTopClass} constructor-element constructor-element_pos_top`}>
+							<span className={classEmpty}>Выберите булки</span>
+						</div>
+					</div>
+				)}
+
+				{ingredientList && ingredientList.length > 0 ? (
+					<span ref={burgerConstructorContent}>
+						<ul
+							className={`${styles.list} custom-scroll`}
+							ref={notBunTarget}
+							style={{
+								height: height,
+								maxHeight: maxHeight,
+							}}>
+							{ingredientList.map((ingredient, index) => {
+								return (
+									<ConstructorIngredient
+										key={ingredient.id}
+										id={ingredient.id}
+										index={index}
+										ingredient={ingredient}
+										removeIngredient={removeIngredient}
+										notBunSelectedClass={notBunSelectedClass}
+										moveIngredient={moveIngredient}
+									/>
+								);
+							})}
+						</ul>
+					</span>
+				) : (
+					<span ref={burgerConstructorContent}>
+						<ul
+							className={`${styles.listEmpty}`}
+							ref={notBunTarget}
+							style={{
+								height: 94,
+								maxHeight: 94,
+							}}>
+							<li>
+								<div className={styles.moveBox}></div>
+								<span className={`${notBunSelectedClass} ${styles.ownelement}`}>
+									<div className='constructor-element constructor-element_pos_middle'>
+										<span className={classEmpty}>Выберите ингредиенты</span>
+									</div>
+								</span>
+							</li>
+						</ul>
+					</span>
+				)}
+
+				{bun ? (
+					<div className={`${styles.bottomIngredient}`} ref={bunTargetBottom}>
+						<div
+							className={`${bunSelectedBottomClass} constructor-element_pos_bottom`}>
+							<ConstructorElement
+								type='bottom'
+								isLocked={true}
+								text={bun.name}
+								price={bun.price}
+								thumbnail={bun.image_mobile}
+							/>
+						</div>
+					</div>
+				) : (
+					<div
+						className={`${styles.bottomIngredient} constructor-element_pos_bottom`}
+						ref={bunTargetBottom}>
+						<div
+							className={`${bunSelectedBottomClass} constructor-element constructor-element_pos_bottom`}>
+							<span className={classEmpty}>Выберите булки</span>
+						</div>
+					</div>
+				)}
+			</>
+		);
+	}, [
+		bun,
+		ingredientList,
+		notBunSelectedClass,
+		bunSelectedTopClass,
+		bunSelectedBottomClass,
+		height,
+		maxHeight,
+	]);
+
+	//resizer, is changing at ingredient list change
+	const onResizeWindow = useCallback(() => {
+		//maxheight
+		let amount = 1;
+		if (ingredientList && ingredientList.length > 1) {
+			amount = ingredientList.length;
+		}
+		setMaxHeight(94 * amount - 10);
+
+		//height
+		const contentPosition =
+			burgerConstructorContent.current.getBoundingClientRect();
+		setHeight(window.innerHeight - Math.ceil(contentPosition.top) - 250);
+	}, [ingredientList]);
+
 	//add listner on resizing
 	useEffect(() => {
 		window.addEventListener('resize', onResizeWindow);
-
 		onResizeWindow();
-
 		return () => {
 			window.removeEventListener('resize', onResizeWindow);
 		};
-	}, []);
-	//resizer
-	const onResizeWindow = () => {
-		const contentPosition =
-			burgerConstructorContent.current.getBoundingClientRect();
-		setHeightConstructor(
-			window.innerHeight - Math.ceil(contentPosition.top) - 50
-		);
-	};
-
-	//add listner on scrolling constructor ingredients
-	useEffect(() => {
-		burgerConstructorContent.current.addEventListener(
-			'scroll',
-			scrollerHandler
-		);
-		return () => {
-			window.removeEventListener('scroll', scrollerHandler);
-		};
-	});
-
-	var infoBun = useRef(null);
-	var infoSauce = useRef(null);
-	var infoBunContent = useRef(null);
-	var infoSauceContent = useRef(null);
-
-	const scrollerHandler = (e) => {
-		var _infoContainer = e.currentTarget.getBoundingClientRect();
-		var _infoSauce = infoSauce.current.getBoundingClientRect();
-		var _infoBun = infoBun.current.getBoundingClientRect();
-		var _infoBunContent = infoBunContent.current.getBoundingClientRect();
-		var _infoSauceContent = infoSauceContent.current.getBoundingClientRect();
-		if (
-			_infoBun.bottom > _infoContainer.top ||
-			_infoBunContent.bottom > _infoContainer.top + 50
-		) {
-			setCurrentTab('bun');
-		} else if (
-			(_infoSauce.top > _infoContainer.top &&
-				_infoSauce.top < _infoContainer.top + 50) ||
-			_infoSauceContent.bottom > _infoContainer.top + 50
-		) {
-			setCurrentTab('sauce');
-		} else {
-			setCurrentTab('main');
-		}
-	};
+	}, [ingredientList]);
 
 	return (
-		<>
-			<h1 className={`${constructorStyles.header} text text_type_main-large`}>
-				Соберите бургер
-			</h1>
-			<nav className={constructorStyles.nav}>
-				<Tab value='bun' active={currentTab === 'bun'} onClick={activateTab}>
-					Булки
-				</Tab>
-				<Tab
-					value='sauce'
-					active={currentTab === 'sauce'}
-					onClick={activateTab}>
-					Соусы
-				</Tab>
-				<Tab value='main' active={currentTab === 'main'} onClick={activateTab}>
-					Начинки
-				</Tab>
-			</nav>
-			<section
-				ref={burgerConstructorContent}
-				style={{
-					height: heightConstructor,
-				}}
-				className={`custom-scroll ${constructorStyles.scrollerStyle}`}>
-				<IngredientGroup
-					ingredients={props.ingredients.filter((ingredient) => {
-						return ingredient.type == 'bun';
-					})}
-					refId={infoBun}
-					refIdContent={infoBunContent}
-					type='bun'
-					openModal={props.openModal}
-				/>
-				<IngredientGroup
-					ingredients={props.ingredients.filter((ingredient) => {
-						return ingredient.type == 'sauce';
-					})}
-					refId={infoSauce}
-					refIdContent={infoSauceContent}
-					type='sauce'
-					openModal={props.openModal}
-				/>
-				<IngredientGroup
-					ingredients={props.ingredients.filter((ingredient) => {
-						return ingredient.type == 'main';
-					})}
-					type='main'
-					openModal={props.openModal}
-				/>
-			</section>
-		</>
+		<section className={styles.section}>
+			{content}
+			<div style={{ textAlign: 'center' }}>
+				<ButtonOrder />
+			</div>
+		</section>
 	);
-};
-
-burgerIngredients.propTypes = {
-	ingredients: PropTypes.arrayOf(
-		PropTypes.shape({
-			_id: PropTypes.string.isRequired,
-			calories: PropTypes.number.isRequired,
-			carbohydrates: PropTypes.number.isRequired,
-			fat: PropTypes.number.isRequired,
-			proteins: PropTypes.number.isRequired,
-			price: PropTypes.number.isRequired,
-			type: PropTypes.string.isRequired,
-			image: PropTypes.string.isRequired,
-			image_large: PropTypes.string.isRequired,
-			image_mobile: PropTypes.string.isRequired,
-			name: PropTypes.string.isRequired,
-		})
-	).isRequired,
-	openModal: PropTypes.func.isRequired,
 };
 
 export default BurgerConstructor;

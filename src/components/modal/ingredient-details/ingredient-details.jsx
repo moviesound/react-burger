@@ -1,11 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styles from './ingredient-details.module.css';
+import { useSelector } from 'react-redux';
+import Loader from '../../loader/loader';
 
-const IngredientDetails = ({ ingredient }) => {
-	return (
+const IngredientDetails = () => {
+	const ingredient = useSelector((state) => {
+		return state.ingredientReducer.ingredient;
+	});
+	return ingredient ? (
 		<div className={styles.container}>
-			<img className={`${styles.image}`} src={ingredient.image_large} />
+			<img
+				alt='img'
+				className={`${styles.image}`}
+				src={ingredient.image_large}
+			/>
 			<div className={`${styles.description} text text_type_main-medium`}>
 				{ingredient.name}
 			</div>
@@ -33,22 +41,9 @@ const IngredientDetails = ({ ingredient }) => {
 				</div>
 			</div>
 		</div>
+	) : (
+		<Loader />
 	);
 };
 
-IngredientDetails.propTypes = {
-	ingredient: PropTypes.shape({
-		_id: PropTypes.string.isRequired,
-		calories: PropTypes.number.isRequired,
-		carbohydrates: PropTypes.number.isRequired,
-		fat: PropTypes.number.isRequired,
-		proteins: PropTypes.number.isRequired,
-		price: PropTypes.number.isRequired,
-		type: PropTypes.string.isRequired,
-		image: PropTypes.string.isRequired,
-		image_large: PropTypes.string.isRequired,
-		image_mobile: PropTypes.string.isRequired,
-		name: PropTypes.string.isRequired,
-	}).isRequired,
-};
 export default IngredientDetails;

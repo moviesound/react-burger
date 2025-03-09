@@ -1,16 +1,30 @@
 import React, { useCallback, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ingredientStyles from './ingredient.module.css';
 import { Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
-import IngredientDetails from '../modal/ingredient-details/ingredient-details';
+import IngredientDetails from '../../../modal/ingredient-details/ingredient-details';
+import { useDrag } from 'react-dnd';
+import { openModal } from '../../../../services/actions/modal';
+import { LOAD_INGREDIENT } from '../../../../services/actions/ingredient';
 
-const Ingredient = (props) => {
+const Ingredient = ({ ingredient }) => {
+	const dispatch = useDispatch();
+	const id = ingredient._id;
+	const type = ingredient.type === 'bun' ? 'bun' : 'not-bun';
+
+	const [{ opacity }, ingredientBoxDrag] = useDrag({
+		type: type,
+		item: { id },
+		collect: (monitor) => ({
+			opacity: monitor.isDragging() ? 0.5 : 1,
+		}),
+	});
 	//blue circle with counter in  burger constructor in the right top cornet of an ingredient
 	let amountBox;
-	if (props.amount) {
-		const amount = parseInt(props.amount, 10);
-		if (amount > 0) {
-			amountBox = <Counter count={amount} size='default' />;
+	if (ingredient.count) {
+		if (ingredient.count > 0) {
+			amountBox = <Counter count={ingredient.count} size='default' />;
 		}
 	} else {
 		amountBox = '';
@@ -25,23 +39,28 @@ const Ingredient = (props) => {
 	}, []);
 
 	const showIngredientInfo = useCallback(() => {
+		dispatch({ type: LOAD_INGREDIENT, ingredient: ingredient });
 		//here will be the query to server in future sprints
-		const content = <IngredientDetails ingredient={props.ingredient} />;
-		const data = { header: 'Детали ингредиента', content: content };
-		props.openModal(data);
-	});
+		const content = <IngredientDetails />;
+		dispatch(openModal('ingredient', 'Детали ингредиента', content));
+	}, [ingredient]);
 
 	return (
-		<li className={ingredientStyles.box} ref={ingredientBox}>
-			<img
-				className={ingredientStyles.image}
-				src={props.ingredient.image}
-				alt={props.ingredient.name}
-			/>
+		<li
+			className={ingredientStyles.box}
+			ref={ingredientBox}
+			style={{ opacity }}>
+			<span ref={ingredientBoxDrag}>
+				<img
+					className={ingredientStyles.image}
+					src={ingredient.image}
+					alt={ingredient.name}
+				/>
+			</span>
 			<div className={`${ingredientStyles.name} text text_type_main-default`}>
-				{props.ingredient.name}
+				{ingredient.name}
 			</div>
-			{amountBox}
+			<span>{amountBox}</span>
 		</li>
 	);
 };
@@ -58,8 +77,7 @@ Ingredient.propTypes = {
 		image_large: PropTypes.string.isRequired,
 		image_mobile: PropTypes.string.isRequired,
 		name: PropTypes.string.isRequired,
+		count: PropTypes.number,
 	}).isRequired,
-	amount: PropTypes.number.isRequired,
-	openModal: PropTypes.func.isRequired,
 };
 export default Ingredient;

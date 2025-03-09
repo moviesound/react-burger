@@ -1,39 +1,35 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useRef } from 'react';
 import styles from './button-order.module.css';
 import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import OrderDetails from '../modal/order-details/order-details';
+import { useDispatch, useSelector } from 'react-redux';
+import { openModal } from '../../services/actions/modal';
+import Loader from '../loader/loader';
+import { order } from '../../services/actions/order';
 
-const ButtonOrder = (props) => {
-	const [sum, setSum] = useState(0);
-	useEffect(() => {
-		let sum = 0;
-		if (props && props.ingredients && props.ingredients.length > 0) {
-			for (var i in props.ingredients) {
-				sum += props.ingredients[i].price;
-			}
-		}
-		setSum(sum);
-	}, [props.ingredients]);
-
+const ButtonOrder = () => {
+	const dispatch = useDispatch();
+	const { sum } = useSelector((state) => {
+		return state.constructorReducer;
+	});
+	const orderIngredients = useSelector(
+		(state) => state.orderReducer.orderIngredients
+	);
 	const button = useRef(null);
 	useEffect(() => {
 		button.current.addEventListener('click', makeOrder);
 		return () => {
 			button.current.removeEventListener('click', makeOrder);
 		};
-	}, []);
+	}, [orderIngredients]);
 
 	const makeOrder = useCallback(() => {
 		//here will be the query to server in future sprints
-		const orderId = '034536';
-		const content = <OrderDetails orderId={orderId} />;
-		const data = { header: '', content: content };
-		props.openModal(data);
-	});
+		dispatch(openModal('order', '', <Loader />));
+		dispatch(order(orderIngredients));
+	}, [orderIngredients]);
 
 	return (
 		<div className={styles.container}>
@@ -49,21 +45,3 @@ const ButtonOrder = (props) => {
 	);
 };
 export default ButtonOrder;
-ButtonOrder.propTypes = {
-	ingredients: PropTypes.arrayOf(
-		PropTypes.shape({
-			_id: PropTypes.string.isRequired,
-			calories: PropTypes.number.isRequired,
-			carbohydrates: PropTypes.number.isRequired,
-			fat: PropTypes.number.isRequired,
-			proteins: PropTypes.number.isRequired,
-			price: PropTypes.number.isRequired,
-			type: PropTypes.string.isRequired,
-			image: PropTypes.string.isRequired,
-			image_large: PropTypes.string.isRequired,
-			image_mobile: PropTypes.string.isRequired,
-			name: PropTypes.string.isRequired,
-		})
-	).isRequired,
-	openModal: PropTypes.func.isRequired,
-};

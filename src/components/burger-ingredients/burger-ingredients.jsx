@@ -1,123 +1,167 @@
-import React, { useEffect, useState, useRef } from "react";
-import styles from "./burger-ingredients.module.css";
-import {
-	ConstructorElement,
-	DragIcon,
-} from '@ya.praktikum/react-developer-burger-ui-components';
-import PropTypes from 'prop-types';
-import ButtonOrder from '../button-order/button-order';
+import React, {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	useMemo,
+} from 'react';
+import styles from './burger-ingredients.module.css';
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import IngredientGroup from './ingredient-group/ingredient-group';
+import Loader from '../loader/loader';
+import { useDispatch, useSelector } from 'react-redux';
+import { downloadIngredients } from '../../services/actions/ingredients';
+import LoaderError from '../loader-error/loader-error';
 
-const BurgerIngredients = (props) => {
-	const [heightIngredients, setHeightIngredients] = useState(0);
-	const [maxHeightIngredients, setMaxHeightIngredients] = useState(1000);
+const BurgerIngredients = () => {
+	const dispatch = useDispatch();
+
+	//Tabs
+	const [currentTab, setCurrentTab] = useState('bun');
+	const activateTab = useCallback((tabId) => {
+		setCurrentTab(tabId);
+		document.querySelector('#' + tabId).scrollIntoView({ behavior: 'smooth' });
+	}, []);
+
+	//content Ref for scrolling and resizing events
 	const burgerIngredientsContent = useRef(null);
-
+	//height of scrolling element: must be changed at resizing of window
+	const [height, setHeight] = useState(0);
 	//add listner on resizing
 	useEffect(() => {
 		window.addEventListener('resize', onResizeWindow);
+
 		onResizeWindow();
+
 		return () => {
 			window.removeEventListener('resize', onResizeWindow);
 		};
-	}, [props]);
-
+	}, []);
 	//resizer
 	const onResizeWindow = () => {
-		//maxheight
-		let amount = 0;
-		for (var i in props.ingredients) {
-			if (props.ingredients[i].type != 'bun') {
-				amount += 1;
-			}
-		}
-		setMaxHeightIngredients(90 * amount - 10);
-
-		//height
 		const contentPosition =
 			burgerIngredientsContent.current.getBoundingClientRect();
-		setHeightIngredients(
-			window.innerHeight - Math.ceil(contentPosition.top) - 250
-		);
+		setHeight(window.innerHeight - Math.ceil(contentPosition.top) - 50);
 	};
 
+	//add listner on scrolling ingredients
+	useEffect(() => {
+		burgerIngredientsContent.current.addEventListener(
+			'scroll',
+			scrollerHandler
+		);
+		return () => {
+			window.removeEventListener('scroll', scrollerHandler);
+		};
+	});
+
+	var infoBun = useRef(null);
+	var infoSauce = useRef(null);
+	var infoBunContent = useRef(null);
+	var infoSauceContent = useRef(null);
+
+	const scrollerHandler = (e) => {
+		var _infoContainer = e.currentTarget.getBoundingClientRect();
+		var _infoSauce = infoSauce.current.getBoundingClientRect();
+		var _infoBun = infoBun.current.getBoundingClientRect();
+		var _infoBunContent = infoBunContent.current.getBoundingClientRect();
+		var _infoSauceContent = infoSauceContent.current.getBoundingClientRect();
+		if (
+			_infoBun.bottom > _infoContainer.top ||
+			_infoBunContent.bottom > _infoContainer.top + 50
+		) {
+			setCurrentTab('bun');
+		} else if (
+			(_infoSauce.top > _infoContainer.top &&
+				_infoSauce.top < _infoContainer.top + 50) ||
+			_infoSauceContent.bottom > _infoContainer.top + 50
+		) {
+			setCurrentTab('sauce');
+		} else {
+			setCurrentTab('main');
+		}
+	};
+
+	//loading ingredients
+	const { ingredients, requestProcess, requestError } = useSelector((state) => {
+		return state.ingredientsReducer;
+	});
+
+	useEffect(() => {
+		dispatch(downloadIngredients());
+	}, [dispatch]);
+
+	const content = useMemo(() => {
+		return requestProcess ? (
+			<Loader />
+		) : requestError ? (
+			<LoaderError />
+		) : (
+			<>
+				<IngredientGroup
+					ingredients={
+						ingredients &&
+						ingredients.filter((ingredient) => {
+							return ingredient.type == 'bun';
+						})
+					}
+					refId={infoBun}
+					refIdContent={infoBunContent}
+					type='bun'
+				/>
+				<IngredientGroup
+					ingredients={
+						ingredients &&
+						ingredients.filter((ingredient) => {
+							return ingredient.type == 'sauce';
+						})
+					}
+					refId={infoSauce}
+					refIdContent={infoSauceContent}
+					type='sauce'
+				/>
+				<IngredientGroup
+					ingredients={
+						ingredients &&
+						ingredients.filter((ingredient) => {
+							return ingredient.type == 'main';
+						})
+					}
+					type='main'
+				/>
+			</>
+		);
+	}, [requestProcess, requestError, ingredients]);
+
 	return (
-		<section className={styles.section}>
-			<div className={styles.topIngredient}>
-				{props && props.ingredients && props.ingredients.length > 0 && (
-					<ConstructorElement
-						type='top'
-						isLocked={true}
-						text={props.ingredients[0].name}
-						price={props.ingredients[0].price}
-						thumbnail={props.ingredients[0].image_mobile}
-					/>
-				)}
-			</div>
-			<ul
-				className={`${styles.list} custom-scroll`}
+		<>
+			<h1 className={`${styles.header} text text_type_main-large`}>
+				Соберите бургер
+			</h1>
+			<nav className={styles.nav}>
+				<Tab value='bun' active={currentTab === 'bun'} onClick={activateTab}>
+					Булки
+				</Tab>
+				<Tab
+					value='sauce'
+					active={currentTab === 'sauce'}
+					onClick={activateTab}>
+					Соусы
+				</Tab>
+				<Tab value='main' active={currentTab === 'main'} onClick={activateTab}>
+					Начинки
+				</Tab>
+			</nav>
+			<section
 				ref={burgerIngredientsContent}
 				style={{
-					height: heightIngredients,
-					overflowY: 'auto',
-					overflowX: 'hidden',
-					maxHeight: maxHeightIngredients,
-				}}>
-				{props.ingredients.map(
-					(ingredient, index) =>
-						index !== 0 &&
-						index !== props.ingredients.length - 1 && (
-							<li key={ingredient._id}>
-								<div className={styles.moveBox}>
-									<DragIcon type='primary' />
-								</div>
-								<ConstructorElement
-									text={ingredient.name}
-									price={ingredient.price}
-									thumbnail={ingredient.image_mobile}
-								/>
-							</li>
-						)
-				)}
-			</ul>
-			<div className={styles.bottomIngredient}>
-				{props && props.ingredients && props.ingredients.length > 0 && (
-					<ConstructorElement
-						type='bottom'
-						isLocked={true}
-						text={props.ingredients[props.ingredients.length - 1].name}
-						price={props.ingredients[props.ingredients.length - 1].price}
-						thumbnail={
-							props.ingredients[props.ingredients.length - 1].image_mobile
-						}
-					/>
-				)}
-			</div>
-			<div style={{ textAlign: 'center' }}>
-				<ButtonOrder
-					ingredients={props.ingredients}
-					openModal={props.openModal}
-				/>
-			</div>
-		</section>
+					height: height,
+				}}
+				className={`custom-scroll ${styles.scrollerStyle}`}>
+				{content}
+			</section>
+		</>
 	);
 };
 
-BurgerIngredients.propTypes = {
-	ingredients: PropTypes.arrayOf(
-		PropTypes.shape({
-			_id: PropTypes.string.isRequired,
-			calories: PropTypes.number.isRequired,
-			carbohydrates: PropTypes.number.isRequired,
-			fat: PropTypes.number.isRequired,
-			proteins: PropTypes.number.isRequired,
-			price: PropTypes.number.isRequired,
-			type: PropTypes.string.isRequired,
-			image: PropTypes.string.isRequired,
-			image_large: PropTypes.string.isRequired,
-			image_mobile: PropTypes.string.isRequired,
-			name: PropTypes.string.isRequired,
-		})
-	).isRequired,
-	openModal: PropTypes.func.isRequired,
-};
 export default BurgerIngredients;
