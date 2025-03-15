@@ -59,18 +59,31 @@ const BurgerConstructor = () => {
 		}),
 	});
 
-	const bunSelectedTopClass =
-		isHoverTopBun && canDropTopBun
-			? styles.active
-			: canDropBottomBun || canDropTopBun
-			? styles.hovered
-			: styles.normal;
-	const bunSelectedBottomClass =
-		isHoverBottomBun && canDropBottomBun
-			? styles.active
-			: canDropBottomBun || canDropTopBun
-			? styles.hovered
-			: styles.normal;
+	const getBunClass = (
+		isHoverBox,
+		canDropBox,
+		canDropSiblingBox
+	) => {
+		if (isHoverBox && canDropBox) {
+			return styles.active;
+		} else if (canDropBox || canDropSiblingBox) {
+			return styles.hovered;
+		} else {
+			return styles.normal;
+		}
+	};
+
+	const bunSelectedTopClass = getBunClass(
+		isHoverTopBun,
+		canDropTopBun,
+		canDropBottomBun
+	);
+
+	const bunSelectedBottomClass = getBunClass(
+		isHoverBottomBun,
+		canDropBottomBun,
+		canDropTopBun
+	);
 
 	const [{ isHoverNotBun, canDropNotBun }, notBunTarget] = useDrop({
 		accept: 'not-bun',

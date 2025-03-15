@@ -56,12 +56,10 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 							(action.ingredient && item._id === action.ingredient._id) ||
 							(action.bun && item._id === action.bun._id)
 						) {
-							if (item.count && item.type !== 'bun') {
-								item.count = item.count + 1;
+							if (item.type !== 'bun') {
+								item.count = (item.count ?? 0) + 1;
 							} else if (item.type === 'bun') {
 								item.count = 2;
-							} else {
-								item.count = 1;
 							}
 						}
 						return item;
