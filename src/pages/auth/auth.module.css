@@ -1,0 +1,22 @@
+.container{
+	padding-top: calc(var(--offset-base-size) * 25);
+}
+.form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: calc(var(--offset-base-size) * 6);
+}
+.footer {
+	padding-top: calc(var(--offset-base-size) * 20);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: calc(var(--offset-base-size) * 4);
+}
+.footer a {
+	text-decoration: none;
+	color: var(--colors-interface-accent);
+}

@@ -1,4 +1,4 @@
-import { HIDE_MODAL, SHOW_MODAL, LOAD_CONTENT } from '../actions/modal';
+import { HIDE_MODAL, SHOW_MODAL, LOAD_CONTENT, SHOW_POPUP_MODAL, HIDE_POPUP_MODAL } from '../actions/modal';
 
 const modalInitialState = {
 	modalIsVisible: false,
@@ -12,7 +12,6 @@ export const modalReducer = (state = modalInitialState, action) => {
 		case HIDE_MODAL: {
 			return {
 				...state,
-				modalIsVisible: false,
 				modalType: null,
 				modalHeader: '',
 				modalContent: '',
@@ -21,10 +20,21 @@ export const modalReducer = (state = modalInitialState, action) => {
 		case SHOW_MODAL: {
 			return {
 				...state,
-				modalIsVisible: true,
 				modalType: action.modalType,
 				modalHeader: action.modalHeader,
 				modalContent: action.modalContent,
+			};
+		}
+		case SHOW_POPUP_MODAL: {
+			return {
+				...state,
+				modalIsVisible: true,
+			};
+		}
+		case HIDE_POPUP_MODAL: {
+			return {
+				...state,
+				modalIsVisible: false,
 			};
 		}
 		case LOAD_CONTENT: {

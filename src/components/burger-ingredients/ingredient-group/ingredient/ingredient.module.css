@@ -20,3 +20,7 @@
 	max-width: 256px;
 	padding: var(--offset-base-size) calc(var(--offset-base-size) * 2);
 }
+.ref{
+	color: inherit;
+	text-decoration: none;
+}

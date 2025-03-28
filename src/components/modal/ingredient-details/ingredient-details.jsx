@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './ingredient-details.module.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../loader/loader';
+import { downloadIngredient } from '../../../services/actions/ingredient';
+import { useParams } from 'react-router';
 
 const IngredientDetails = () => {
-	const ingredient = useSelector((state) => {
-		return state.ingredientReducer.ingredient;
+	const dispatch = useDispatch();
+	const { ingredient } = useSelector((state) => {
+		return state.ingredientReducer;
 	});
+	const { ingredientId } = useParams();
+	useEffect(() => {
+		if ((!ingredient && ingredientId) || ingredientId === ingredient['_id']) {
+			dispatch(downloadIngredient(ingredientId));
+		}
+	}, [dispatch, ingredient, ingredientId]);
 	return ingredient ? (
 		<div className={styles.container}>
 			<img

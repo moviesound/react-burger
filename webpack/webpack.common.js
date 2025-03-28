@@ -7,8 +7,9 @@ const webpack = require('webpack');
 const production = process.env.NODE_ENV === 'production';
 
 module.exports = {
-	entry: path.resolve(__dirname, '..', './src/index.js'), //точка входа в наше приложение содержит абсолютный путь к index.ts
+	entry: path.resolve(__dirname, '..', './src/index.jsx'), //точка входа в наше приложение содержит абсолютный путь к index.ts
 	output: {
+		publicPath: '/',
 		path: path.resolve(__dirname, '..', './dist'), //путь куда будет собираться наш проект
 		filename: production
 			? 'static/scripts/[name].[contenthash].js'
@@ -74,13 +75,13 @@ module.exports = {
 		],
 	},
 	resolve: {
-		extensions: ['.js', '.jsx', '.tsx', '.ts', '.json']//, //указываем файлы с которыми будет работать webpack
-		/*alias: {
-			'@pages': path.resolve(__dirname, '/src/pages'),
-			'@components': path.resolve(__dirname, '/src/components'),
-			'@services': path.resolve(__dirname, '/src/services'),
+		extensions: ['.js', '.jsx', '.tsx', '.ts', '.json'], //указываем файлы с которыми будет работать webpack
+		alias: {
+			'@pages': path.resolve(__dirname, '..', './src/pages'),
+			'@components': path.resolve(__dirname, '..', './src/components'),
+			'@services': path.resolve(__dirname, '..', './src/services'),
 			'@utils': path.resolve(__dirname, '..', './src/utils'),
-		}*/
+		}
 	},
 	plugins: [
 		new HTMLWebpackPlugins({

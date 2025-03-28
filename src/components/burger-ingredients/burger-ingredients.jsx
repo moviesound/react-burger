@@ -12,6 +12,7 @@ import Loader from '../loader/loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { downloadIngredients } from '../../services/actions/ingredients';
 import LoaderError from '../loader-error/loader-error';
+import { useBeforeUnload } from 'react-router';
 
 const BurgerIngredients = () => {
 	const dispatch = useDispatch();
@@ -28,13 +29,19 @@ const BurgerIngredients = () => {
 	//height of scrolling element: must be changed at resizing of window
 	const [height, setHeight] = useState(0);
 	//add listner on resizing
+	useBeforeUnload(() => {
+		window.removeEventListener('resize', onResizeWindow);
+		window.removeEventListener('scroll', scrollerHandler);
+	});
 	useEffect(() => {
 		window.addEventListener('resize', onResizeWindow);
 
 		onResizeWindow();
 
 		return () => {
-			window.removeEventListener('resize', onResizeWindow);
+			if (onResizeWindow) {
+				window.removeEventListener('resize', onResizeWindow);
+			}
 		};
 	}, []);
 	//resizer
@@ -51,7 +58,9 @@ const BurgerIngredients = () => {
 			scrollerHandler
 		);
 		return () => {
-			window.removeEventListener('scroll', scrollerHandler);
+			if (scrollerHandler) {
+				window.removeEventListener('scroll', scrollerHandler);
+			}
 		};
 	});
 

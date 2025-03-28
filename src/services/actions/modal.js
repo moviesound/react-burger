@@ -2,6 +2,8 @@ export const HIDE_MODAL = 'HIDE_MODAL';
 export const SHOW_MODAL = 'SHOW_MODAL';
 export const LOAD_CONTENT = 'LOAD_CONTENT';
 export const CLEAR_INGREDIENT = 'CLEAR_INGREDIENT';
+export const SHOW_POPUP_MODAL = 'SHOW_POPUP_MODAL';
+export const HIDE_POPUP_MODAL = 'HIDE_POPUP_MODAL';
 
 export const closeModal = (modalType, closeBtn, overlay, modal) => {
 	return function (dispatch) {
@@ -17,14 +19,16 @@ export const closeModal = (modalType, closeBtn, overlay, modal) => {
 		});
 		//hide modal
 		dispatch({ type: HIDE_MODAL });
-
-		if (modalType === 'ingredient') {
-			dispatch({ type: CLEAR_INGREDIENT });
-		}
+		dispatch({ type: HIDE_POPUP_MODAL });
 	};
 };
 
-export const openModal = (type = '', header = '', content = null) => {
+export const loadModal = (
+	type = '',
+	header = '',
+	content = null,
+	modalCallType = 'popup'
+) => {
 	return function (dispatch) {
 		dispatch({
 			type: SHOW_MODAL,
@@ -32,6 +36,9 @@ export const openModal = (type = '', header = '', content = null) => {
 			modalType: type,
 			modalContent: content,
 		});
+		if (modalCallType === 'popup') {
+			dispatch({ type: SHOW_POPUP_MODAL });
+		}
 	};
 };
 

@@ -1,4 +1,5 @@
 import OrderDetails from '../../components/modal/order-details/order-details';
+import { api } from '../../utils/api';
 
 export const ORDER_SENDING_IS_IN_PROCESS = 'ORDER_SENDING_IS_IN_PROCESS';
 export const ORDER_FAILED = 'ORDER_FAILED';
@@ -14,37 +15,6 @@ export function order(ingredientIds) {
 		dispatch({
 			type: ORDER_SENDING_IS_IN_PROCESS,
 		});
-		fetch('https://norma.nomoreparties.space/api/orders', {
-			method: 'POST',
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ ingredients: ingredientIds }),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					dispatch({
-						type: ORDER_FAILED,
-					});
-					throw new Error(`Something went wrong: ${res.status}`);
-				}
-				return res.json();
-			})
-			.then((data) => {
-				dispatch({
-					type: ORDER_SUCCESS,
-					orderInfo: data,
-				});
-				dispatch({
-					type: LOAD_CONTENT,
-					modalContent: <OrderDetails />,
-				});
-			})
-			.catch((err) => {
-				dispatch({
-					type: ORDER_FAILED,
-				});
-				console.error(err);
-			});
+		api.sendOrder(dispatch, ingredientIds);
 	};
 }
