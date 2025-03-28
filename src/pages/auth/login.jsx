@@ -25,9 +25,6 @@ const LoginPage = () => {
 	const loginHandler = (e) => {
 		e.preventDefault();
 		dispatch(login(emailField, passwordField));
-		//navigate('/'); don't know whether it is necessary to do, I've commented redirection
-		// in webinar it was told to make the redirection to page where user wanted to go,
-		// in checklist it is told to redirect always to constructor
 	};
 	return (
 		<section className={styles.container}>
