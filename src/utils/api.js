@@ -242,7 +242,7 @@ export const api = {
 				} else {
 					const text =
 						res.message ??
-						`Something went wrong: no success field or it is not true`;
+						'Something went wrong: no success field or it is not true';
 					dispatch({
 						type: LOGIN_FAILED,
 						error: text,

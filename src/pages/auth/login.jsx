@@ -5,13 +5,14 @@ import {
 	EmailInput,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { login, STATE_CLEAR } from '../../services/actions/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import Error from '../../components/error/error';
 
 const LoginPage = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	useEffect(() => {
 		dispatch({ type: STATE_CLEAR });
 	}, [dispatch]);
@@ -21,7 +22,11 @@ const LoginPage = () => {
 	const requestProcess = useSelector(
 		(state) => state.authReducer.requestProcess
 	);
-
+	const loginHandler = (e) => {
+		e.preventDefault();
+		dispatch(login(emailField, passwordField));
+		navigate('/');
+	};
 	return (
 		<section className={styles.container}>
 			<form className={styles.form}>
@@ -55,9 +60,7 @@ const LoginPage = () => {
 					type='primary'
 					size='medium'
 					disabled={requestProcess ? true : false}
-					onClick={() => {
-						dispatch(login(emailField, passwordField));
-					}}>
+					onClick={loginHandler}>
 					Войти
 				</Button>
 			</form>
