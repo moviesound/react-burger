@@ -35,10 +35,10 @@ const Ingredient = ({ ingredient }) => {
 	} else {
 		amountBox = '';
 	}
+	const ingredientBox = useRef(null);
 	useBeforeUnload(() => {
 		ingredientBox.current.removeEventListener('click', showIngredientInfo);
 	});
-	const ingredientBox = useRef(null);
 	useEffect(() => {
 		ingredientBox.current.addEventListener('click', showIngredientInfo);
 		return () => {
@@ -68,13 +68,13 @@ const Ingredient = ({ ingredient }) => {
 				// на котором была открыта наша модалка
 				state={{ background: location }}
 				className={ingredientStyles.ref}>
-				<span ref={ingredientBoxDrag}>
+				<div ref={ingredientBoxDrag}>
 					<img
 						className={ingredientStyles.image}
 						src={ingredient.image}
 						alt={ingredient.name}
 					/>
-				</span>
+				</div>
 				<div
 					className={`${ingredientStyles.sum} text text_type_digits-default`}>
 					{ingredient.price} <CurrencyIcon type='primary' />

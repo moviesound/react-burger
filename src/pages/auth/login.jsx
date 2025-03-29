@@ -27,7 +27,7 @@ const LoginPage = () => {
 	};
 	return (
 		<section className={styles.container}>
-			<form className={styles.form}>
+			<form className={styles.form} onSubmit={loginHandler}>
 				<h1 className='text text_type_main-medium'>Вход</h1>
 				<EmailInput
 					placeholder='E-mail'
@@ -54,11 +54,10 @@ const LoginPage = () => {
 				/>
 				{errorText && <Error text={errorText} height={false}></Error>}
 				<Button
-					htmlType='button'
 					type='primary'
 					size='medium'
-					disabled={requestProcess ? true : false}
-					onClick={loginHandler}>
+					htmlType='submit'
+					disabled={requestProcess ? true : false}>
 					Войти
 				</Button>
 			</form>

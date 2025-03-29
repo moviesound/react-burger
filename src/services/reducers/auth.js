@@ -9,7 +9,9 @@ import {
 	REGISTER_SUCCESS,
 	STATE_CLEAR,
 	AUTH_CHECKED,
-	LOGOUT_SUCCESS, USER_SUCCESS,
+	LOGOUT_SUCCESS,
+	USER_SUCCESS,
+	FORM_FAILED,
 } from '../actions/auth';
 
 import { PROFILE_CHANGE_SUCCESS } from '../actions/profile';
@@ -62,10 +64,7 @@ export const authReducer = (state = authInitialState, action) => {
 				user: action.user,
 			};
 		}
-		case LOGIN_FAILED:
-		case REGISTER_FAILED:
-		case PASSWORD_RESET_FAILED:
-		case PASSWORD_RESET_SENDING_FAILED: {
+		case FORM_FAILED: {
 			return {
 				...state,
 				requestProcess: false,

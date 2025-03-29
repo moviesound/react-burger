@@ -9,7 +9,7 @@ export function addIngredientToConstructor(item, ingredients, bunIds, type) {
 		if (type === 'not-bun') {
 			for (var i in ingredients) {
 				if (ingredients[i]._id === item.id && ingredients[i].type !== 'bun') {
-					dispatch({ type: ADD_INGREDIENT, ingredient: ingredients[i] });
+					dispatch({ type: ADD_INGREDIENT, ingredient: ingredients[i], id: Math.ceil(Math.random() * 10000000) });
 					break;
 				}
 			}

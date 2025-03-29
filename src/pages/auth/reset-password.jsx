@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './auth.module.css';
 import {
 	PasswordInput,
@@ -6,15 +6,20 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
-import {setNewPassword} from '../../services/actions/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { setNewPassword, STATE_CLEAR } from '../../services/actions/auth';
+import Error from '../../components/error/error';
 
 const ResetPasswordPage = () => {
 	const resetFlag = localStorage.getItem('reset');
 	const [passwordField, setPasswordField] = useState('');
 	const [codeField, setCodeField] = useState('');
 	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch({ type: STATE_CLEAR });
+	}, [dispatch]);
 	const navigate = useNavigate();
+	const errorText = useSelector((state) => state.authReducer.errorText);
 	if (!resetFlag) {
 		return <Navigate to='/forgot-password' />;
 	}
@@ -33,7 +38,7 @@ const ResetPasswordPage = () => {
 	};
 	return (
 		<section className={styles.container}>
-			<form className={styles.form}>
+			<form className={styles.form} onSubmit={resetHandler}>
 				<h1 className='text text_type_main-medium'>Восстановление пароля</h1>
 				<PasswordInput
 					autoComplete='no-autofill-please'
@@ -56,12 +61,8 @@ const ResetPasswordPage = () => {
 					size='default'
 					value={codeField}
 				/>
-
-				<Button
-					htmlType='button'
-					type='primary'
-					size='medium'
-					onClick={resetHandler}>
+				{errorText && <Error text={errorText} height={false}></Error>}
+				<Button type='primary' size='medium' htmlType='submit'>
 					Сохранить
 				</Button>
 			</form>

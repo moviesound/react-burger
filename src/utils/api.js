@@ -9,15 +9,10 @@ import {
 import {
 	PASSWORD_RESET_SUCCESS,
 	PASSWORD_RESET_PROCESSING,
-	PASSWORD_RESET_FAILED,
+	FORM_FAILED,
 	PASSWORD_RESET_SENDING_SUCCESS,
-	PASSWORD_RESET_SENDING_FAILED,
-	PASSWORD_RESET_SENDING_PROCESSING,
-	REGISTER_FAILED,
 	REGISTER_SUCCESS,
-	LOGIN_FAILED,
 	LOGIN_SUCCESS,
-	LOGOUT_FAILED,
 	LOGOUT_SUCCESS,
 	AUTH_CHECKED,
 	USER_SUCCESS,
@@ -123,24 +118,13 @@ export const api = {
 		dispatch({
 			type: PASSWORD_RESET_PROCESSING,
 		});
-		fetch(`${BURGER_API_URL}/api/password-reset/reset`, {
+		request(`${BURGER_API_URL}/api/password-reset/reset`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json;charset=UTF-8',
 			},
 			body: JSON.stringify({ password: password, token: token }),
 		})
-			.then((res) => {
-				if (!res.ok) {
-					const text = `Something went wrong: ${res.status}`;
-					dispatch({
-						type: PASSWORD_RESET_FAILED,
-						error: text,
-					});
-					//throw new Error(text);
-				}
-				return res.json();
-			})
 			.then((res) => {
 				if (res.success === true) {
 					dispatch({
@@ -151,38 +135,27 @@ export const api = {
 					return res;
 				} else {
 					dispatch({
-						type: PASSWORD_RESET_FAILED,
+						type: FORM_FAILED,
 						text: 'Error',
 					});
 				}
 			})
 			.catch((err) => {
 				dispatch({
-					type: PASSWORD_RESET_FAILED,
+					type: FORM_FAILED,
 					error: err.message,
 				});
 				console.error(err);
 			});
 	},
 	register: function (dispatch, email, password, name) {
-		fetch(`${BURGER_API_URL}/api/auth/register`, {
+		request(`${BURGER_API_URL}/api/auth/register`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json;charset=UTF-8',
 			},
 			body: JSON.stringify({ email: email, password: password, name: name }),
 		})
-			.then((res) => {
-				if (!res.ok) {
-					const text = `Something went wrong: ${res.status}`;
-					dispatch({
-						type: REGISTER_FAILED,
-						error: text,
-					});
-					//throw new Error(text);
-				}
-				return res.json();
-			})
 			.then((res) => {
 				if (res.success === true) {
 					dispatch({
@@ -197,7 +170,7 @@ export const api = {
 						res.message ??
 						`Something went wrong: no success field or it is not true`;
 					dispatch({
-						type: REGISTER_FAILED,
+						type: FORM_FAILED,
 						error: text,
 					});
 					throw new Error(text);
@@ -205,31 +178,20 @@ export const api = {
 			})
 			.catch((err) => {
 				dispatch({
-					type: REGISTER_FAILED,
+					type: FORM_FAILED,
 					error: err.message,
 				});
 				console.error(err);
 			});
 	},
 	login: function (dispatch, email, password) {
-		fetch(`${BURGER_API_URL}/api/auth/login`, {
+		request(`${BURGER_API_URL}/api/auth/login`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json;charset=UTF-8',
 			},
 			body: JSON.stringify({ email: email, password: password }),
 		})
-			.then((res) => {
-				if (!res.ok) {
-					const text = `Something went wrong: ${res.status}`;
-					dispatch({
-						type: LOGIN_FAILED,
-						error: text,
-					});
-					//throw new Error(text);
-				}
-				return res.json();
-			})
 			.then((res) => {
 				if (res.success === true) {
 					dispatch({
@@ -244,7 +206,7 @@ export const api = {
 						res.message ??
 						'Something went wrong: no success field or it is not true';
 					dispatch({
-						type: LOGIN_FAILED,
+						type: FORM_FAILED,
 						error: text,
 					});
 					throw new Error(text);
@@ -252,7 +214,7 @@ export const api = {
 			})
 			.catch((err) => {
 				dispatch({
-					type: LOGIN_FAILED,
+					type: FORM_FAILED,
 					error: err.message,
 				});
 				console.error(err);
@@ -327,33 +289,18 @@ export const api = {
 				}
 			})
 			.catch((err) => {
-				dispatch({
-					type: PROFILE_CHANGE_FAILED,
-					user: res.user,
-				});
 				api.logoutSuccess(dispatch);
 				console.error(err);
 			});
 	},
 	sendCode: function (dispatch, email, navigate) {
-		fetch(`${BURGER_API_URL}/api/password-reset`, {
+		request(`${BURGER_API_URL}/api/password-reset`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json;charset=UTF-8',
 			},
 			body: JSON.stringify({ email: email }),
 		})
-			.then((res) => {
-				if (!res.ok) {
-					const text = `Something went wrong: ${res.status}`;
-					dispatch({
-						type: PASSWORD_RESET_SENDING_FAILED,
-						error: text,
-					});
-					//throw new Error(text);
-				}
-				return res.json();
-			})
 			.then((res) => {
 				if (res.success === true) {
 					dispatch({
@@ -364,35 +311,26 @@ export const api = {
 					return res;
 				} else {
 					dispatch({
-						type: PASSWORD_RESET_SENDING_FAILED,
+						type: FORM_FAILED,
 					});
 				}
 			})
 			.catch((err) => {
 				dispatch({
-					type: PASSWORD_RESET_SENDING_FAILED,
+					type: FORM_FAILED,
 					error: err.message,
 				});
 				console.error(err);
 			});
 	},
 	logout: function (dispatch, refreshToken) {
-		fetch(`${BURGER_API_URL}/api/auth/logout`, {
+		request(`${BURGER_API_URL}/api/auth/logout`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json;charset=UTF-8',
 			},
 			body: JSON.stringify({ token: refreshToken }),
 		})
-			.then((res) => {
-				if (!res.ok) {
-					dispatch({
-						type: LOGOUT_FAILED,
-					});
-					throw new Error(`Something went wrong: ${res.status}`);
-				}
-				return res.json();
-			})
 			.then((res) => {
 				if (res.success === true) {
 					api.logoutSuccess(dispatch);
@@ -401,14 +339,14 @@ export const api = {
 			})
 			.catch((err) => {
 				dispatch({
-					type: LOGOUT_FAILED,
+					type: FORM_FAILED,
 				});
 				console.error(err);
 			});
 	},
 };
 
-const checkReponse = (res) => {
+const checkResponse = (res) => {
 	return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 };
 
@@ -423,7 +361,7 @@ export const refreshToken = () => {
 				token: localStorage.getItem('refreshToken'),
 			}),
 		})
-			.then(checkReponse)
+			.then(checkResponse)
 			// !! Важно для обновления токена в мидлваре, чтобы запись токенов
 			// была тут, а не в fetchWithRefresh
 			.then((refreshData) => {
@@ -440,15 +378,20 @@ export const refreshToken = () => {
 export const fetchWithRefresh = async (url, options) => {
 	try {
 		const res = await fetch(url, options);
-		return await checkReponse(res);
+		return await checkResponse(res);
 	} catch (err) {
 		if (err.message === 'jwt expired') {
 			const refreshData = await refreshToken(); //обновляем токен
 			options.headers.authorization = refreshData.accessToken;
 			const res = await fetch(url, options); //повторяем запрос
-			return await checkReponse(res);
+			return await checkResponse(res);
 		} else {
 			return Promise.reject(err);
 		}
 	}
 };
+
+function request(url, options) {
+	// принимает два аргумента: урл и объект опций, как и `fetch`
+	return fetch(url, options).then(checkResponse);
+}

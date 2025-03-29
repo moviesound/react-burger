@@ -27,7 +27,11 @@ const RegisterPage = () => {
 
 	return (
 		<section className={styles.container}>
-			<form className={styles.form}>
+			<form
+				className={styles.form}
+				onSubmit={() => {
+					dispatch(register(emailField, passwordField, nameField));
+				}}>
 				<h1 className='text text_type_main-medium'>Регистрация</h1>
 				<Input
 					autoComplete='no-autofill-please'
@@ -69,13 +73,10 @@ const RegisterPage = () => {
 				/>
 				{errorText && <Error text={errorText} height={false}></Error>}
 				<Button
-					htmlType='button'
 					type='primary'
 					size='medium'
-					disabled={requestProcess ? true : false}
-					onClick={() => {
-						dispatch(register(emailField, passwordField, nameField));
-					}}>
+					htmlType='submit'
+					disabled={requestProcess ? true : false}>
 					Зарегистрироваться
 				</Button>
 			</form>

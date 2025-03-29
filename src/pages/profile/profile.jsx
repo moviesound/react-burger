@@ -37,6 +37,9 @@ const ProfilePage = () => {
 	};
 	const saveParams = (e) => {
 		e.preventDefault();
+		if (!showButtons) {
+			e.stopPropagation();
+		}
 		dispatch(
 			saveUser(
 				emailField !== user.email ? emailField : null,
@@ -52,7 +55,7 @@ const ProfilePage = () => {
 				<div className={style.leftBox}>
 					<ProfileMenu item='profile' />
 				</div>
-				<form className={style.rightBox} autoComplete='off'>
+				<form className={style.rightBox} onSubmit={saveParams}>
 					<Input
 						autoComplete='no-autofill-please'
 						type='text'
@@ -96,7 +99,7 @@ const ProfilePage = () => {
 							<Button htmlType='button' type='secondary' onClick={resetParams}>
 								Отмена
 							</Button>
-							<Button htmlType='button' type='primary' onClick={saveParams}>
+							<Button type='primary' htmlType='submit'>
 								Сохранить
 							</Button>
 						</div>

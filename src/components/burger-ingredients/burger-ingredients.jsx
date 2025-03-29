@@ -31,7 +31,10 @@ const BurgerIngredients = () => {
 	//add listner on resizing
 	useBeforeUnload(() => {
 		window.removeEventListener('resize', onResizeWindow);
-		window.removeEventListener('scroll', scrollerHandler);
+		burgerIngredientsContent.current.removeEventListener(
+			'scroll',
+			scrollerHandler
+		);
 	});
 	useEffect(() => {
 		window.addEventListener('resize', onResizeWindow);
@@ -58,8 +61,11 @@ const BurgerIngredients = () => {
 			scrollerHandler
 		);
 		return () => {
-			if (scrollerHandler) {
-				window.removeEventListener('scroll', scrollerHandler);
+			if (scrollerHandler && burgerIngredientsContent.current) {
+				burgerIngredientsContent.current.removeEventListener(
+					'scroll',
+					scrollerHandler
+				);
 			}
 		};
 	});

@@ -27,6 +27,8 @@ export const AUTH_CHECKED = 'AUTH_CHECKED';
 
 export const STATE_CLEAR = 'STATE_CLEAR';
 
+export const FORM_FAILED = 'FORM_FAILED';
+
 export function login(email, password) {
 	return function (dispatch) {
 		dispatch({
