@@ -12,7 +12,6 @@ import Error from '../../components/error/error';
 
 const LoginPage = () => {
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	useEffect(() => {
 		dispatch({ type: STATE_CLEAR });
 	}, [dispatch]);

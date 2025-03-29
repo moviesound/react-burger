@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import ingredientStyles from './ingredient.module.css';
-import { Counter } from '@ya.praktikum/react-developer-burger-ui-components';
+import {
+	Counter,
+	CurrencyIcon,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
 import IngredientDetails from '../../../modal/ingredient-details/ingredient-details';
 import { useDrag } from 'react-dnd';
@@ -72,6 +75,10 @@ const Ingredient = ({ ingredient }) => {
 						alt={ingredient.name}
 					/>
 				</span>
+				<div
+					className={`${ingredientStyles.sum} text text_type_digits-default`}>
+					{ingredient.price} <CurrencyIcon type='primary' />
+				</div>
 				<div className={`${ingredientStyles.name} text text_type_main-default`}>
 					{ingredient.name}
 				</div>
