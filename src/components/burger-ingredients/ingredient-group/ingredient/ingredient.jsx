@@ -19,11 +19,13 @@ const Ingredient = ({ ingredient }) => {
 	const type = ingredient.type === 'bun' ? 'bun' : 'not-bun';
 	const location = useLocation();
 
-	const [{ opacity }, ingredientBoxDrag] = useDrag({
+	const [{ opacity, isDragging }, ingredientBoxDrag] = useDrag({
 		type: type,
 		item: { id },
 		collect: (monitor) => ({
 			opacity: monitor.isDragging() ? 0.5 : 1,
+			isDragging: !!monitor.isDragging(),
+			x: console.log(monitor),
 		}),
 	});
 	//blue circle with counter in  burger constructor in the right top cornet of an ingredient
@@ -54,13 +56,23 @@ const Ingredient = ({ ingredient }) => {
 		const content = <IngredientDetails />;
 		dispatch(loadModal('ingredient', 'Детали ингредиента', content, 'route'));
 	}, [ingredient]);
-
+	useEffect(() => {
+		console.log('opacity=' + opacity);
+	}, [opacity]);
+	useEffect(() => {
+		console.log('isDragging=' + isDragging);
+	}, [isDragging]);
 	return (
 		<li
 			className={ingredientStyles.box}
 			ref={ingredientBox}
-			style={{ opacity }}>
+			style={{
+				MozOpacity: opacity,
+				KhtmlOpacity: opacity,
+				opacity: opacity,
+			}}>
 			<Link
+				draggable={false}
 				key={id}
 				// Тут мы формируем динамический путь для нашего ингредиента
 				to={`/ingredients/${id}`}
