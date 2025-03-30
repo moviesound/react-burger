@@ -16,6 +16,7 @@ import {
 	SORT_INGREDIENTS,
 } from '../../services/actions/constructor';
 import { ConstructorIngredient } from './constructor-ingredient/constructor-ingredient';
+import { useBeforeUnload } from 'react-router';
 
 const BurgerConstructor = () => {
 	const dispatch = useDispatch();
@@ -250,13 +251,17 @@ const BurgerConstructor = () => {
 			burgerConstructorContent.current.getBoundingClientRect();
 		setHeight(window.innerHeight - Math.ceil(contentPosition.top) - 250);
 	}, [ingredientList]);
-
+	useBeforeUnload(() => {
+		window.removeEventListener('resize', onResizeWindow);
+	});
 	//add listner on resizing
 	useEffect(() => {
 		window.addEventListener('resize', onResizeWindow);
 		onResizeWindow();
 		return () => {
-			window.removeEventListener('resize', onResizeWindow);
+			if (onResizeWindow) {
+				window.removeEventListener('resize', onResizeWindow);
+			}
 		};
 	}, [ingredientList]);
 

@@ -1,0 +1,13 @@
+.loader {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 30%;
+	min-height: 100px;
+	width: 100%;
+}
+
+.noHeight {
+	height: auto !important;
+	min-height: auto !important;
+}

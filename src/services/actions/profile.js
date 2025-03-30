@@ -1,0 +1,5 @@
+import { api } from '../../utils/api';
+
+export const PROFILE_CHANGE_FAILED = 'PROFILE_CHANGE_FAILED';
+export const PROFILE_CHANGE_SUCCESS = 'PROFILE_CHANGE_SUCCESS';
+export const PROFILE_CHANGE_PROCESSING = 'PROFILE_CHANGE_PROCESSING';

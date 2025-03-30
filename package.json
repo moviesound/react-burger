@@ -87,7 +87,8 @@
 		"react-dnd-html5-backend": "^16.0.1",
 		"react-dom": "^18.2.0",
 		"react-redux": "^9.2.0",
-		"react-router-dom": "^7.1.5",
+		"react-router": "^7.3.0",
+		"react-router-dom": "^6.15.0",
 		"redux": "^5.0.1",
 		"redux-thunk": "^3.1.0"
 	},

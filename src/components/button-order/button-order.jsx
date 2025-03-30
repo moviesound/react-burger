@@ -5,9 +5,11 @@ import {
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal } from '../../services/actions/modal';
+import { loadModal } from '../../services/actions/modal';
 import Loader from '../loader/loader';
 import { order } from '../../services/actions/order';
+import Error from '../error/error';
+import { useNavigate } from 'react-router';
 
 const ButtonOrder = () => {
 	const dispatch = useDispatch();
@@ -18,18 +20,32 @@ const ButtonOrder = () => {
 		(state) => state.orderReducer.orderIngredients
 	);
 	const button = useRef(null);
-	useEffect(() => {
-		button.current.addEventListener('click', makeOrder);
-		return () => {
-			button.current.removeEventListener('click', makeOrder);
-		};
-	}, [orderIngredients]);
-
-	const makeOrder = useCallback(() => {
-		//here will be the query to server in future sprints
-		dispatch(openModal('order', '', <Loader />));
-		dispatch(order(orderIngredients));
-	}, [orderIngredients]);
+	const user = useSelector( (state) => state.authReducer.user);
+	const navigate = useNavigate();
+	const makeOrder = useCallback(
+		(e) => {
+			e.preventDefault();
+			if (!user) {
+				navigate('/login');
+			} else {
+				//here will be the query to server in future sprints
+				if (orderIngredients.length === 0) {
+					dispatch(
+						loadModal(
+							'order',
+							'Ошибка заказа',
+							<Error text='Добавьте хотя бы один ингредиент' />,
+							'popup'
+						)
+					);
+				} else {
+					dispatch(loadModal('order', '', <Loader />, 'popup'));
+					dispatch(order(orderIngredients));
+				}
+			}
+		},
+		[orderIngredients]
+	);
 
 	return (
 		<div className={styles.container}>
@@ -37,7 +53,11 @@ const ButtonOrder = () => {
 				{sum} <CurrencyIcon type='primary' />
 			</div>
 			<span ref={button}>
-				<Button htmlType='button' type='primary' size='large'>
+				<Button
+					onClick={makeOrder}
+					htmlType='button'
+					type='primary'
+					size='large'>
 					Оформить заказ
 				</Button>
 			</span>

@@ -29,7 +29,7 @@ export const constructorReducer = (state = constructorInitialState, action) => {
 					...state.ingredientList,
 					{
 						...action.ingredient,
-						id: Math.ceil(Math.random() * 10000000),
+						id: action.id,
 					},
 				],
 			};

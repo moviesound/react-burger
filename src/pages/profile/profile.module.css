@@ -1,0 +1,59 @@
+.container {
+	width: 1240px;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.content {
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: flex-start;
+}
+
+.leftBox {
+	width: 320px;
+	margin: calc(var(--offset-base-size) * 30) calc(var(--offset-base-size) * 15) 0 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	align-content: flex-start;
+	gap: calc(var(--offset-base-size) * 10);
+}
+
+.rightBox {
+	width: 490px;
+	margin: calc(var(--offset-base-size) * 30) 0 0 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	align-content: flex-start;
+	gap: calc(var(--offset-base-size) * 6);
+}
+
+.ref {
+	text-decoration: none;
+	color: var(--text-primary-color);
+}
+
+.inactive {
+	color: var(--text-inactive-color);
+}
+
+.description {
+	margin-top: calc(var(--offset-base-size) * 20);
+	opacity: 0.4;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: flex-end;
+	gap: calc(var(--offset-base-size) * 10);
+	width: 490px;
+}
