@@ -38,6 +38,9 @@
 .ref {
 	text-decoration: none;
 	color: var(--text-primary-color);
+	background-color: unset;
+	cursor: pointer;
+	border: none;
 }
 
 .inactive {
