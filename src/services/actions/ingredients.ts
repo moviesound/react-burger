@@ -1,4 +1,4 @@
-import { api } from '../../utils/api';
+/*import { api } from '../../utils/api';
 import { AppDispatch } from '../store';
 
 export const DOWNLOAD_INGREDIENTS_IS_IN_PROCESS =
@@ -18,3 +18,4 @@ export function downloadIngredients() {
 		api.downloadIngredients(dispatch, null);
 	};
 }
+*/

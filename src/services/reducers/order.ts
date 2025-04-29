@@ -1,4 +1,4 @@
-import {
+/*import {
 	ORDER_FAILED,
 	ORDER_SUCCESS,
 	ORDER_SENDING_IS_IN_PROCESS,
@@ -144,3 +144,4 @@ export const orderReducer = (
 			return state;
 	}
 };
+*/

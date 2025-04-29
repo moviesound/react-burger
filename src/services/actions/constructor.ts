@@ -1,4 +1,4 @@
-import { TDragObject, TIngredient } from '../../utils/types';
+/*import { TDragObject, TIngredient } from '../../utils/types';
 import { AppDispatch } from '../store';
 
 export const ADD_BUN = 'ADD_BUN';
@@ -57,3 +57,4 @@ export function addIngredientToConstructor(
 		dispatch({ type: 'COUNT_SUM' });
 	};
 }
+*/

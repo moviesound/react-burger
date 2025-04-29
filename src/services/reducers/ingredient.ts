@@ -1,4 +1,4 @@
-import {
+/*import {
 	LOAD_INGREDIENT,
 	CLEAR_INGREDIENT,
 	DOWNLOAD_INGREDIENT_SUCCESS,
@@ -56,3 +56,4 @@ export const ingredientReducer = (
 			return state;
 	}
 };
+*/

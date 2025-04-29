@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './auth.module.css';
 import {
 	PasswordInput,
@@ -7,28 +7,53 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link } from 'react-router';
-import { useSelector, useDispatch } from '../../services/store';
+import { useDispatch } from '../../app/hooks';
 import Error from '../../components/error/error';
-import { register } from '../../services/actions/auth';
-import { TAppState, TUndefinedString } from '@utils/types';
+import { setUser } from '../../features/auth';
+import { apiSlice } from '../../features/api/api-slice';
+import { TError } from '../../features/types/types';
 
 const RegisterPage = () => {
 	const dispatch = useDispatch();
-	useEffect(() => {
-		dispatch({ type: 'STATE_CLEAR' });
-	}, [dispatch]);
+	const [errorMsg, setErrorMsg] = useState<string>('');
 	const [emailField, setEmailField] = useState<string>('');
 	const [nameField, setNameField] = useState<string>('');
 	const [passwordField, setPasswordField] = useState<string>('');
-	const errorText: TUndefinedString = useSelector(
-		(state: TAppState): TUndefinedString => state.authReducer.errorText
-	);
-	const requestProcess: boolean = useSelector(
-		(state: TAppState) => state.authReducer.requestProcess
-	);
+	const [register, { isLoading, isError, error }] =
+		apiSlice.useLazyRegisterQuery();
+
 	const registerHandler = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		dispatch(register(emailField, passwordField, nameField));
+		register({
+			email: emailField,
+			password: passwordField,
+			name: nameField,
+		}).then(({ data }) => {
+			if (data) {
+				if (
+					data.success === true &&
+					data.accessToken &&
+					data.refreshToken &&
+					data.user
+				) {
+					localStorage.setItem('accessToken', data.accessToken);
+					localStorage.setItem('refreshToken', data.refreshToken);
+					dispatch(setUser({ user: data.user }));
+				}
+			}
+			if (error) {
+				if ('status' in error) {
+					// you can access all properties of `FetchBaseQueryError` here
+					setErrorMsg(
+						'error' in error
+							? error.error
+							: (error.data as TError).message
+							? (error.data as TError).message
+							: JSON.stringify(error.data)
+					);
+				}
+			}
+		});
 	};
 	const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		e.preventDefault();
@@ -51,10 +76,8 @@ const RegisterPage = () => {
 					type='text'
 					placeholder='Имя'
 					name='name'
-					error={!!errorText}
 					value={nameField}
 					onChange={nameHandler}
-					errorText=''
 					size='default'
 				/>
 				<EmailInput
@@ -76,12 +99,12 @@ const RegisterPage = () => {
 					value={passwordField}
 					onChange={passwordHandler}
 				/>
-				{errorText && <Error text={errorText} height={false}></Error>}
+				{isError && error && <Error text={errorMsg} height={false}></Error>}
 				<Button
 					type='primary'
 					size='medium'
 					htmlType='submit'
-					disabled={requestProcess}>
+					disabled={isLoading}>
 					Зарегистрироваться
 				</Button>
 			</form>

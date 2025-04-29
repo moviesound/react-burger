@@ -9,15 +9,15 @@ import styles from './burger-ingredients.module.css';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientGroup from './ingredient-group/ingredient-group';
 import Loader from '../loader/loader';
-import { useSelector, useDispatch } from '../../services/store';
-import { downloadIngredients } from '../../services/actions/ingredients';
 import LoaderError from '../loader-error/loader-error';
 import { useBeforeUnload } from 'react-router';
-import { Scrolling, TAppState, TIngredient } from '../../utils/types';
+import { Scrolling } from '../../features/types/types';
+import { apiSlice } from '../../features/api/api-slice';
+import { useDispatch } from '../../app/hooks';
+import { loadIngredients } from '../../features/ingredients';
 
 const BurgerIngredients = (): React.JSX.Element => {
 	const dispatch = useDispatch();
-
 	//Tabs
 	const [currentTab, setCurrentTab] = useState<string>('bun');
 	const activateTab = useCallback((tabId: string): void => {
@@ -66,64 +66,37 @@ const BurgerIngredients = (): React.JSX.Element => {
 	};
 
 	//loading ingredients
-	const ingredients: TIngredient[] = useSelector(
-		(state: TAppState): TIngredient[] => {
-			return state.ingredientsReducer.ingredients;
-		}
-	);
-	const requestProcess: boolean = useSelector((state: TAppState): boolean => {
-		return state.ingredientsReducer.requestProcess;
-	});
-
-	const requestFailed: boolean = useSelector((state: TAppState): boolean => {
-		return state.ingredientsReducer.requestFailed;
-	});
-
+	const {
+		data: result,
+		isLoading,
+		isError,
+	} = apiSlice.useGetIngredientsQuery();
+	const ingredientsList = result?.data ?? [];
 	useEffect(() => {
-		dispatch(downloadIngredients());
-	}, [dispatch]);
+		dispatch(loadIngredients({ ingredients: ingredientsList }));
+	}, [ingredientsList]);
 
 	const content = useMemo(() => {
-		return requestProcess ? (
+		return isLoading ? (
 			<Loader />
-		) : requestFailed ? (
+		) : isError ? (
 			<LoaderError />
 		) : (
 			<>
 				<IngredientGroup
-					ingredients={
-						ingredients &&
-						ingredients.filter((ingredient: TIngredient): boolean => {
-							return ingredient.type == 'bun';
-						})
-					}
 					refId={infoBun}
 					refIdContent={infoBunContent}
 					type='bun'
 				/>
 				<IngredientGroup
-					ingredients={
-						ingredients &&
-						ingredients.filter((ingredient: TIngredient): boolean => {
-							return ingredient.type == 'sauce';
-						})
-					}
 					refId={infoSauce}
 					refIdContent={infoSauceContent}
 					type='sauce'
 				/>
-				<IngredientGroup
-					ingredients={
-						ingredients &&
-						ingredients.filter((ingredient: TIngredient): boolean => {
-							return ingredient.type == 'main';
-						})
-					}
-					type='main'
-				/>
+				<IngredientGroup type='main' />
 			</>
 		);
-	}, [requestProcess, requestFailed, ingredients]);
+	}, [isLoading, isError, ingredientsList]);
 
 	//add listner on resizing
 	useBeforeUnload((): void => {
@@ -153,7 +126,6 @@ const BurgerIngredients = (): React.JSX.Element => {
 
 	//add listner on scrolling ingredients
 	useEffect(() => {
-		window.removeEventListener('resize', onResizeWindow);
 		if (!burgerIngredientsContent.current) return;
 		const el: Scrolling<HTMLDivElement> = burgerIngredientsContent.current;
 		el.addEventListener('scroll', scrollerHandler);

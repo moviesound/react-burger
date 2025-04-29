@@ -1,28 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './auth.module.css';
 import {
 	EmailInput,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useNavigate } from 'react-router';
-import { sendCode } from '../../services/actions/auth';
-import { useSelector, useDispatch } from '../../services/store';
 import Error from '../../components/error/error';
-import { TAppState, TUndefinedString } from '@utils/types';
+import { apiSlice } from '../../features/api/api-slice';
+import { TError } from '../../features/types/types';
 
 const ForgotPasswordPage = (): React.JSX.Element => {
 	const [email, setEmail] = useState<string>('');
-	const dispatch = useDispatch();
-	useEffect(() => {
-		dispatch({ type: 'STATE_CLEAR' });
-	}, [dispatch]);
 	const navigate = useNavigate();
-	const errorText: TUndefinedString = useSelector(
-		(state: TAppState): TUndefinedString => state.authReducer.errorText
-	);
+	const [errorMsg, setErrorMsg] = useState<string>('');
+	const [sendCode, { isLoading, error }] = apiSlice.useLazyGetResetCodeQuery();
+
+	const validateEmail = (email: string): boolean => {
+		return !!String(email)
+			.toLowerCase()
+			.match(
+				/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+			);
+	};
+
 	const sendCodeHandler = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		dispatch(sendCode(email, navigate));
+		if (!validateEmail(email)) {
+			setErrorMsg('Please enter a valid email');
+		} else {
+			sendCode(email).then(({ data }) => {
+				if (data) {
+					if (data.success === true) {
+						setErrorMsg('');
+						localStorage.setItem('reset', 'true');
+						navigate('/reset-password');
+					}
+				}
+				if (error) {
+					if ('status' in error) {
+						// you can access all properties of `FetchBaseQueryError` here
+						setErrorMsg(
+							'error' in error
+								? error.error
+								: (error.data as TError).message
+								? (error.data as TError).message
+								: JSON.stringify(error.data)
+						);
+					}
+				}
+			});
+		}
 	};
 	const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
 		e.preventDefault();
@@ -41,8 +68,12 @@ const ForgotPasswordPage = (): React.JSX.Element => {
 					value={email}
 					onChange={onChangeEmail}
 				/>
-				{errorText && <Error text={errorText} height={false}></Error>}
-				<Button type='primary' size='medium' htmlType='submit'>
+				{errorMsg && <Error text={errorMsg} height={false}></Error>}
+				<Button
+					type='primary'
+					size='medium'
+					htmlType='submit'
+					disabled={isLoading}>
 					Восстановить
 				</Button>
 			</form>

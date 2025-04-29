@@ -1,4 +1,4 @@
-import {
+/*import {
 	LOGIN_PROCESSING,
 	LOGIN_SUCCESS,
 	REGISTER_PROCESSING,
@@ -83,3 +83,4 @@ export const authReducer = (
 		}
 	}
 };
+*/

@@ -10,15 +10,16 @@ import LoginPage from '../pages/auth/login';
 import ForgotPasswordPage from '../pages/auth/forgot-password';
 import ResetPasswordPage from '../pages/auth/reset-password';
 import ProfilePage from '../pages/profile/profile';
-import { useSelector, useDispatch } from '../services/store';
-import { getUser } from '../services/actions/auth';
+//import { useSelector, useDispatch } from '../services/store';
 import {
 	OnlyUnauthorized,
 	OnlyAuthorized,
 } from '../components/protected-route/protected-route';
 import ProfileOrdersPage from '../pages/profile/orders/orders';
 import Page404 from '../pages/404/404';
-import { TAppState, TUser } from '../utils/types';
+import { apiDefendedSlice } from '../features/api/api-defended-slice';
+import { useDispatch } from '../app/hooks';
+import { authChecked, setUser } from '../features/auth';
 
 export const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();
@@ -26,22 +27,17 @@ export const App = (): React.JSX.Element => {
 	const navigate = useNavigate();
 	const background = location.state && location.state.background;
 	const handleModalClose = (): void => {
-		// Возвращаемся к предыдущему пути при закрытии модалки
-		navigate(-1);
+		navigate('/');
 	};
-
-	const user: TUser = useSelector(
-		(state: TAppState): TUser => state.authReducer.user
-	);
-
+	const { data, isLoading, isSuccess } = apiDefendedSlice.useGetUserQuery();
 	useEffect(() => {
-		if (!user && localStorage.getItem('accessToken')) {
-			dispatch(getUser());
-		} else {
-			dispatch({ type: 'AUTH_CHECKED' });
+		if (isSuccess && data.user) {
+			dispatch(setUser({ user: data.user }));
 		}
-	}, [user]);
-
+		if (!isLoading) {
+			dispatch(authChecked());
+		}
+	}, [isSuccess, isLoading, data, dispatch]);
 	return (
 		<div className={style.mainContainer}>
 			<AppHeader />

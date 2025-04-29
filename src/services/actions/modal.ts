@@ -1,4 +1,4 @@
-import { AppDispatch } from '../store';
+/*import { AppDispatch } from '../store';
 import React from 'react';
 
 export const HIDE_MODAL = 'HIDE_MODAL';
@@ -66,3 +66,4 @@ export const loadModalContent = (
 		});
 	};
 };
+*/

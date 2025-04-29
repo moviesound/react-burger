@@ -1,4 +1,4 @@
-import {
+/*import {
 	DOWNLOAD_INGREDIENTS_FAILED,
 	DOWNLOAD_INGREDIENTS_IS_IN_PROCESS,
 	DOWNLOAD_INGREDIENTS_SUCCESS,
@@ -91,3 +91,4 @@ export const ingredientsReducer = (
 			return state;
 	}
 };
+*/

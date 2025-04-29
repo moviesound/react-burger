@@ -1,21 +1,21 @@
 import React, { LegacyRef } from 'react';
 import styles from './ingredient-group.module.css';
 import Ingredient from './ingredient/ingredient';
-import { TIngredient } from '../../../utils/types';
+import { TIngredient } from '../../../features/types/types';
+import { useSelector } from '../../../app/hooks';
 
 type TIngredientGroup = {
-	ingredients: TIngredient[];
 	refId?: LegacyRef<HTMLHeadingElement>;
 	refIdContent?: LegacyRef<HTMLDivElement>;
 	type: string;
 };
 
 const IngredientGroup = ({
-	ingredients,
 	refId,
 	refIdContent,
 	type,
 }: TIngredientGroup): React.JSX.Element => {
+	const ingredients = useSelector((state) => state.ingredients.ingredients);
 	//the list of elements of one group: buns, sauces or mains in burger constructor container
 	return (
 		<>
@@ -29,11 +29,19 @@ const IngredientGroup = ({
 				className={styles.ingredient}
 				id={`${type}-content`}
 				ref={refIdContent}>
-				{ingredients.map((ingredient: TIngredient) => (
-					<ul className={styles.box} key={ingredient._id}>
-						<Ingredient ingredient={ingredient} />
-					</ul>
-				))}
+				{ingredients &&
+					ingredients.map((ingredient: TIngredient) => {
+						if (ingredient.type) {
+							return ingredient.type == type ? (
+								<ul className={styles.box} key={ingredient._id}>
+									<Ingredient ingredient={ingredient} />
+								</ul>
+							) : (
+								''
+							);
+						}
+						return '';
+					})}
 			</div>
 		</>
 	);

@@ -1,4 +1,4 @@
-import { api } from '../../utils/api';
+/*import { api } from '../../utils/api';
 import { PROFILE_CHANGE_PROCESSING } from '../../services/actions/profile';
 import { NavigateFunction } from 'react-router/dist/development';
 
@@ -104,3 +104,4 @@ export function setNewPassword(
 		api.setNewPassword(dispatch, password, code, navigate);
 	};
 }
+*/

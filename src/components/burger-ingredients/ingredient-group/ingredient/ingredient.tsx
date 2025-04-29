@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from '../../../../services/store';
+//import { useDispatch } from '../../../../services/store';
+import { useDispatch } from '../../../../app/hooks';
 import ingredientStyles from './ingredient.module.css';
 import {
 	Counter,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import IngredientDetails from '../../../modal/ingredient-details/ingredient-details';
 import { useDrag } from 'react-dnd';
-import { loadModal } from '../../../../services/actions/modal';
 import { Link, useBeforeUnload, useLocation, useNavigate } from 'react-router';
 import {
 	TDragCollectedProps,
 	TDragObject,
 	TIngredientProps,
-} from '../../../../utils/types';
+} from '../../../../features/types/types';
+import { showModal } from '../../../../features/modal';
 
 const Ingredient = ({ ingredient }: TIngredientProps): React.JSX.Element => {
 	const navigate = useNavigate();
@@ -60,11 +60,15 @@ const Ingredient = ({ ingredient }: TIngredientProps): React.JSX.Element => {
 	}, [navigate]);
 
 	const showIngredientInfo = useCallback((): void => {
-		dispatch({ type: 'LOAD_INGREDIENT', ingredient: ingredient });
 		//here will be the query to server in future sprints
-		const content = <IngredientDetails />;
-		dispatch(loadModal('ingredient', 'Детали ингредиента', content, 'route'));
-	}, [ingredient]);
+		dispatch(
+			showModal({
+				modalType: 'ingredient',
+				modalHeader: 'Детали ингредиента',
+				modalContent: { type: 'ingredient' },
+			})
+		);
+	}, [dispatch]);
 	return (
 		<li
 			className={ingredientStyles.box}

@@ -6,15 +6,18 @@ import {
 	Input,
 	PasswordInput,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useSelector, useDispatch } from '../../services/store';
+import { useSelector, useDispatch } from '../../app/hooks';
 import ProfileMenu from '../../components/profile/profile-menu';
-import { saveUser } from '../../services/actions/auth';
-import { TAppState, TUser } from '../../utils/types';
+import { apiDefendedSlice } from '../../features/api/api-defended-slice';
+import { setUser } from '../../features/auth';
+import Error from '../../components/error/error';
 
 const ProfilePage = (): React.JSX.Element => {
-	const user: TUser = useSelector(
+	/*const user: TUser = useSelector(
 		(state: TAppState): TUser => state.authReducer.user
-	);
+	);*/
+	const dispatch = useDispatch();
+	const user = useSelector((state) => state.auth.user);
 	const [emailField, setEmailField] = React.useState<string>(
 		user && user.email ? user.email : ''
 	);
@@ -22,8 +25,8 @@ const ProfilePage = (): React.JSX.Element => {
 	const [nameField, setNameField] = React.useState<string>(
 		user && user.name ? user.name : ''
 	);
+	const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 	const [showButtons, setShowButtons] = React.useState<boolean>(false);
-	const dispatch = useDispatch();
 	useEffect(() => {
 		if (
 			user &&
@@ -38,7 +41,7 @@ const ProfilePage = (): React.JSX.Element => {
 			setShowButtons(false);
 		}
 	}, [user, emailField, passwordField, nameField]);
-
+	const [saveUser] = apiDefendedSlice.useSaveUserMutation();
 	const resetParams = (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		setEmailField(user && user.email ? user.email : '');
@@ -50,18 +53,39 @@ const ProfilePage = (): React.JSX.Element => {
 		if (!showButtons) {
 			e.stopPropagation();
 		}
-
-		dispatch(
-			saveUser(
-				user && user.email && emailField !== user.email ? emailField : null,
-				user && user.name && nameField !== user.name ? nameField : null,
-				passwordField !== '' ? passwordField : null
-			)
-		);
+		saveUser({
+			email:
+				user && user.email && emailField !== user.email
+					? emailField
+					: undefined,
+			name:
+				user && user.name && nameField !== user.name ? nameField : undefined,
+			password: passwordField !== '' ? passwordField : undefined,
+		}).then((response) => {
+			if (
+				response.data &&
+				response.data.success === true &&
+				response.data.user
+			) {
+				dispatch(setUser({ user: response.data.user }));
+			} else {
+				setErrorMsg(
+					response.data && response.data.message
+						? response.data.message
+						: 'Неизвестная ошибка'
+				);
+			}
+		});
+		/*
+				dispatch(
+					saveUser(
+						user && user.email && emailField !== user.email ? emailField : null,
+						user && user.name && nameField !== user.name ? nameField : null,
+						passwordField !== '' ? passwordField : null
+					)
+				);*/
 	};
-	const errorText: string | undefined = useSelector(
-		(state: TAppState): string | undefined => state.profileReducer.errorText
-	);
+	const errorText = useSelector((state) => state.profile.errorText);
 	return (
 		<div className={style.container}>
 			<section className={style.content}>
@@ -105,6 +129,7 @@ const ProfilePage = (): React.JSX.Element => {
 							setPasswordField(e.target.value);
 						}}
 					/>
+					{errorMsg && <Error text={errorMsg} height={false}></Error>}
 					{showButtons && (
 						<div className={style.buttons}>
 							<Button htmlType='button' type='secondary' onClick={resetParams}>

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import styles from './auth.module.css';
 import {
 	PasswordInput,
@@ -6,26 +6,19 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, Navigate, useNavigate } from 'react-router';
-import { useSelector, useDispatch } from '../../services/store';
-import { setNewPassword } from '../../services/actions/auth';
 import Error from '../../components/error/error';
-import { TAppState, TUndefinedString } from '@utils/types';
+import { apiSlice } from '../../features/api/api-slice';
+import { TError } from '../../features/types/types';
 
 const ResetPasswordPage = (): React.JSX.Element => {
 	const resetFlag: string | null = localStorage.getItem('reset');
 	const [passwordField, setPasswordField] = useState<string>('');
+	const [errorMsg, setErrorMsg] = useState<string>('');
 	const [codeField, setCodeField] = useState<string>('');
-	const dispatch = useDispatch();
-	useEffect(() => {
-		dispatch({ type: 'STATE_CLEAR' });
-	}, [dispatch]);
 	const navigate = useNavigate();
-	const errorText: TUndefinedString = useSelector(
-		(state: TAppState): TUndefinedString => state.authReducer.errorText
-	);
-	if (!resetFlag) {
-		return <Navigate to='/forgot-password' />;
-	}
+
+	const [setNewPassword, { isLoading, error }] =
+		apiSlice.useLazySetNewPasswordQuery();
 
 	const passwordHandler = (e: ChangeEvent<HTMLInputElement>) => {
 		e.preventDefault();
@@ -37,8 +30,36 @@ const ResetPasswordPage = (): React.JSX.Element => {
 	};
 	const resetHandler = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		dispatch(setNewPassword(passwordField, codeField, navigate));
+		setNewPassword({ password: passwordField, token: codeField }).then(
+			({ data }) => {
+				if (data) {
+					if (data.success === true) {
+						navigate('/login');
+						setTimeout(function () {
+							localStorage.removeItem('reset');
+						}, 5000);
+					}
+				}
+				if (error) {
+					if ('status' in error) {
+						// you can access all properties of `FetchBaseQueryError` here
+						setErrorMsg(
+							'error' in error
+								? error.error
+								: (error.data as TError).message
+								? (error.data as TError).message
+								: JSON.stringify(error.data)
+						);
+					}
+				}
+			}
+		);
 	};
+
+	if (!resetFlag) {
+		return <Navigate to='/forgot-password' />;
+	}
+
 	return (
 		<section className={styles.container}>
 			<form className={styles.form} onSubmit={resetHandler}>
@@ -51,20 +72,21 @@ const ResetPasswordPage = (): React.JSX.Element => {
 					size='default'
 					extraClass='mb-2'
 					value={passwordField}
-					errorText=''
 				/>
 				<Input
 					autoComplete='no-autofill-please'
 					placeholder='Введите код из письма'
 					name='code'
 					onChange={codeHandler}
-					error={false}
-					errorText=''
 					size='default'
 					value={codeField}
 				/>
-				{errorText && <Error text={errorText} height={false}></Error>}
-				<Button type='primary' size='medium' htmlType='submit'>
+				{errorMsg && <Error text={errorMsg} height={false}></Error>}
+				<Button
+					type='primary'
+					size='medium'
+					htmlType='submit'
+					disabled={isLoading}>
 					Сохранить
 				</Button>
 			</form>

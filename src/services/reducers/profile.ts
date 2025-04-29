@@ -1,4 +1,4 @@
-import {
+/*import {
 	PROFILE_CHANGE_FAILED,
 	PROFILE_CHANGE_SUCCESS,
 	PROFILE_CHANGE_PROCESSING,
@@ -43,3 +43,4 @@ export const profileReducer = (
 		}
 	}
 };
+*/

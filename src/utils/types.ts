@@ -1,4 +1,4 @@
-import { reducer } from '../services/reducers';
+/*import { reducer } from '../services/reducers';
 import React, { LegacyRef } from 'react';
 import {
 	AUTH_CHECKED,
@@ -193,6 +193,11 @@ export type TOrderActions = {
 	orderInfo: TOrder;
 };
 
+export type TError = {
+	success: boolean;
+	message: string;
+};
+
 export type TOrder = {
 	success: boolean;
 	name: string;
@@ -350,3 +355,4 @@ export type TPayloadTotal = {
 export type TDispatchActionsTotal = {
 	type: string;
 } & TPayloadTotal;
+*/

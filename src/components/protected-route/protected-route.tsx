@@ -1,20 +1,21 @@
-import { useSelector } from '../../services/store';
 import { Navigate, useLocation } from 'react-router';
 import Loader from '../loader/loader';
-import React from 'react';
-import { TAppState, TProtectedRouteProps, TUser } from '../../utils/types';
+import React, { useEffect, useState } from 'react';
+import { TProtectedRouteProps } from '../../features/types/types';
+import { apiDefendedSlice } from '../../features/api/api-defended-slice';
+import { useSelector } from '../../app/hooks';
 
 const ProtectedRoute = ({
 	isAuthorized = false,
 	component,
 }: TProtectedRouteProps): React.JSX.Element => {
-	const user: TUser = useSelector(
-		(state: TAppState): TUser => state.authReducer.user
-	);
-	const isAuthChecked: boolean = useSelector(
-		(state: TAppState): boolean => state.authReducer.isAuthChecked
-	);
+	const user = useSelector((state) => state.auth.user);
+
 	const location = useLocation();
+
+	const isAuthChecked = useSelector(
+		(state): boolean => state.auth.isAuthChecked
+	);
 
 	if (!isAuthChecked) {
 		return <Loader />;

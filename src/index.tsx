@@ -5,7 +5,7 @@ import { App } from './app';
 import '@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
 import './styles.css';
 import { Provider } from 'react-redux';
-import { store } from './services/store';
+import { store } from './app/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(

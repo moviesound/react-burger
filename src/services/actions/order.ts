@@ -1,4 +1,4 @@
-import { api } from '../../utils/api';
+/* { api } from '../../utils/api';
 import { AppDispatch } from '../store';
 import React from 'react';
 
@@ -24,3 +24,4 @@ export function order(
 		}
 	};
 }
+*/

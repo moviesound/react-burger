@@ -3,26 +3,25 @@ import ModalOverlay from './modal-overlay';
 import styles from './modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import React from 'react';
-import { useSelector } from '../../services/store';
-import { TAppState, TModalProps } from '../../utils/types';
+import { useSelector } from '../../app/hooks';
+import { TModalProps } from '../../features/types/types';
+import IngredientDetails from './ingredient-details/ingredient-details';
+import Error from '../error/error';
+import Loader from '../loader/loader';
+import OrderDetails from './order-details/order-details';
 
 const Modal = ({
 	closeBtnRef,
 	overlayRef,
 	modalRef,
 }: TModalProps): React.JSX.Element => {
-	const modalHeader: string | undefined = useSelector(
-		(state: TAppState): string | undefined => {
-			return state.modalReducer.modalHeader;
-		}
-	);
+	const modalHeader = useSelector((state) => {
+		return state.modal.modalHeader;
+	});
 
-	const modalContent: string | number | React.JSX.Element | undefined =
-		useSelector(
-			(state: TAppState): string | number | React.JSX.Element | undefined => {
-				return state.modalReducer.modalContent;
-			}
-		);
+	const modalContent = useSelector((state) => {
+		return state.modal.modalContent;
+	});
 
 	return createPortal(
 		<ModalOverlay overlayRef={overlayRef}>
@@ -33,7 +32,23 @@ const Modal = ({
 						<CloseIcon type='primary' />
 					</div>
 				</h2>
-				<div className={styles.content}>{modalContent}</div>
+				<div className={styles.content}>
+					{typeof modalContent !== 'undefined' ? (
+						modalContent.type === 'ingredient' ? (
+							<IngredientDetails />
+						) : modalContent.type === 'order' ? (
+							<OrderDetails />
+						) : modalContent.type === 'error' ? (
+							<Error text='Добавьте хотя бы один ингредиент' height={false} />
+						) : modalContent.type === 'loader' ? (
+							<Loader />
+						) : (
+							''
+						)
+					) : (
+						''
+					)}
+				</div>
 			</div>
 		</ModalOverlay>,
 		document.getElementById('modal-root')!

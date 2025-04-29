@@ -1,58 +1,49 @@
-import React, { useEffect } from 'react';
 import styles from './ingredient-details.module.css';
-import { useSelector, useDispatch } from '../../../services/store';
 import Loader from '../../loader/loader';
-import { downloadIngredient } from '../../../services/actions/ingredient';
 import { useParams } from 'react-router';
-import { TAppState, TIngredient } from '../../../utils/types';
+import { apiSlice } from '../../../features/api/api-slice';
 
 const IngredientDetails = (): React.JSX.Element => {
-	const dispatch = useDispatch();
-	const ingredient: TIngredient | null = useSelector(
-		(state: TAppState): TIngredient | null => {
-			return state.ingredientReducer.ingredient;
+	const { ingredientId } = useParams();
+	const { data: ingredientFiltered } = apiSlice.useGetIngredientsQuery(
+		undefined,
+		{
+			selectFromResult: ({ data }) => ({
+				data: data?.data?.filter((item) => item._id === ingredientId),
+			}),
 		}
 	);
-	const { ingredientId } = useParams();
-	useEffect(() => {
-		if (
-			(!ingredient && ingredientId) ||
-			(ingredient && ingredientId === ingredient['_id'])
-		) {
-			dispatch(downloadIngredient(ingredientId));
-		}
-	}, [dispatch, ingredient, ingredientId]);
-	return ingredient ? (
+	return ingredientFiltered && ingredientFiltered[0] ? (
 		<div className={styles.container}>
 			<img
 				alt='img'
 				className={`${styles.image}`}
-				src={ingredient.image_large}
+				src={ingredientFiltered[0].image_large}
 			/>
 			<div className={`${styles.description} text text_type_main-medium`}>
-				{ingredient.name}
+				{ingredientFiltered[0].name}
 			</div>
 			<div
 				className={`${styles.infoContainer} text text_type_main-small text_color_inactive`}>
 				<div className={`${styles.infoBox}`}>
 					<span>Калории, ккал</span>
 					<br />
-					<span>{ingredient.calories}</span>
+					<span>{ingredientFiltered[0].calories}</span>
 				</div>
 				<div className={`${styles.infoBox}`}>
 					<span>Белки, г</span>
 					<br />
-					<span>{ingredient.proteins}</span>
+					<span>{ingredientFiltered[0].proteins}</span>
 				</div>
 				<div className={`${styles.infoBox}`}>
 					<span>Жиры, г</span>
 					<br />
-					<span>{ingredient.fat}</span>
+					<span>{ingredientFiltered[0].fat}</span>
 				</div>
 				<div className={`${styles.infoBox}`}>
 					<span>Углеводы, г</span>
 					<br />
-					<span>{ingredient.carbohydrates}</span>
+					<span>{ingredientFiltered[0].carbohydrates}</span>
 				</div>
 			</div>
 		</div>

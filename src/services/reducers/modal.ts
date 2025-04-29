@@ -1,4 +1,4 @@
-import {
+/*import {
 	HIDE_MODAL,
 	SHOW_MODAL,
 	LOAD_CONTENT,
@@ -58,3 +58,4 @@ export const modalReducer = (
 		}
 	}
 };
+*/

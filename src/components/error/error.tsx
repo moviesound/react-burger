@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './error.module.css';
-import { ErrorProps } from '../../utils/types';
+import { ErrorProps } from '../../features/types/types';
 
 const Error = ({ text, height }: ErrorProps): React.JSX.Element => {
 	return (

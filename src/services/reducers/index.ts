@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+/*import { combineReducers } from 'redux';
 import { constructorReducer } from './constructor';
 import { ingredientsReducer } from './ingredients';
 import { ingredientReducer } from './ingredient';
@@ -18,3 +18,4 @@ export const reducer = combineReducers({
 });
 
 export type RootState = ReturnType<typeof reducer>;
+*/

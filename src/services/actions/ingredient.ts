@@ -1,4 +1,4 @@
-import { api } from '../../utils/api';
+/*import { api } from '../../utils/api';
 import { AppDispatch } from '../store';
 
 export const LOAD_INGREDIENT = 'LOAD_INGREDIENT';
@@ -15,3 +15,4 @@ export function downloadIngredient(id: string) {
 		api.downloadIngredients(dispatch, id);
 	};
 }
+*/

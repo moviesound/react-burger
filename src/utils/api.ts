@@ -1,4 +1,4 @@
-import {
+/*import {
 	DOWNLOAD_INGREDIENTS_FAILED,
 	DOWNLOAD_INGREDIENTS_SUCCESS,
 } from '../services/actions/ingredients';
@@ -17,10 +17,7 @@ import {
 	AUTH_CHECKED,
 	USER_SUCCESS,
 } from '../services/actions/auth';
-import {
-	PROFILE_CHANGE_FAILED,
-	PROFILE_CHANGE_SUCCESS,
-} from '../services/actions/profile';
+
 import {
 	LOAD_CONTENT,
 	ORDER_FAILED,
@@ -29,6 +26,9 @@ import {
 import { AppDispatch } from '../services/store';
 import { TIngredient, TUser } from './types';
 import { NavigateFunction } from 'react-router';
+
+import { authChecked, setUser } from '../features/auth';
+import { profileFailed } from '../features/profile';
 
 const BURGER_API_URL = 'https://norma.nomoreparties.space';
 
@@ -270,13 +270,15 @@ export const api = {
 				Authorization: `${localStorage.getItem('accessToken')}`,
 			},
 		})
-			.then((res) => {
-				if (res.success === true) {
-					dispatch({
+			.then((payload) => {
+				if (payload.success === true) {
+					dispatch(setUser({ user: payload.user }));
+					/*dispatch({
 						type: USER_SUCCESS,
-						user: res.user,
-					});
-					return res;
+						user: payload.user,
+					});*/
+/*
+					return payload;
 				} else {
 					api.logoutSuccess(dispatch);
 					throw new Error('Token is old: LOGOUT');
@@ -287,7 +289,8 @@ export const api = {
 				console.error(err);
 			})
 			.finally(() => {
-				dispatch({ type: AUTH_CHECKED });
+				dispatch(authChecked());
+				//dispatch({ type: AUTH_CHECKED });
 			});
 	},
 	saveUser: function (
@@ -314,18 +317,17 @@ export const api = {
 			},
 			body: JSON.stringify(body),
 		})
-			.then((res) => {
-				if (res.success === true) {
-					dispatch({
-						type: PROFILE_CHANGE_SUCCESS,
-						user: res.user,
-					});
-					return res;
+			.then((payload) => {
+				if (payload.success === true) {
+					dispatch(setUser({ user: payload.user }));
+					return payload;
 				} else {
-					dispatch({
+					profileFailed({ errorText: payload.message });
+					/*dispatch({
 						type: PROFILE_CHANGE_FAILED,
-						user: res.user,
-					});
+						user: payload.user,
+					});*/
+/*
 					api.logoutSuccess(dispatch);
 				}
 			})
@@ -470,3 +472,4 @@ function request<TRequest>(
 	// принимает два аргумента: урл и объект опций, как и `fetch`
 	return fetch(url, options).then(checkResponse<TRequest>);
 }
+*/

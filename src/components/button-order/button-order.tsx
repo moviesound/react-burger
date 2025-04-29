@@ -1,38 +1,29 @@
-import React, {
-	SyntheticEvent,
-	useCallback,
-	useRef,
-} from 'react';
+import React, { SyntheticEvent, useCallback, useRef } from 'react';
 import styles from './button-order.module.css';
 import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useSelector, useDispatch } from '../../services/store';
-import { loadModal } from '../../services/actions/modal';
-import Loader from '../loader/loader';
-import { order } from '../../services/actions/order';
-import Error from '../error/error';
+import { useSelector, useDispatch } from '../../app/hooks';
+//import { order } from '../../services/actions/order';
 import { useNavigate } from 'react-router';
-import { TAppState, TUser } from '../../utils/types';
-import OrderDetails from '../modal/order-details/order-details';
+import { showModal, showPopupModal } from '../../features/modal';
+import { apiDefendedSlice } from '../../features/api/api-defended-slice';
+import { addOrderInfo } from '../../features/order';
 
 const ButtonOrder = (): React.JSX.Element => {
 	const dispatch = useDispatch();
-	const sum: number | undefined = useSelector(
-		(state: TAppState): number | undefined => {
-			return state.constructorReducer.sum;
-		}
-	);
-	const orderIngredients: string[] | undefined = useSelector(
-		(state: TAppState): string[] | undefined =>
-			state.orderReducer.orderIngredients
-	);
+	const sum = useSelector((state) => {
+		return state.burgerConstructor.sum;
+	});
+	const orderIngredients = useSelector((state) => state.order.orderIngredients);
 	const button = useRef<HTMLButtonElement>(null);
-	const user: TUser = useSelector(
-		(state: TAppState): TUser => state.authReducer.user
-	);
+	const user = useSelector((state) => state.auth.user);
 	const navigate = useNavigate();
+	const [order] = apiDefendedSlice.useOrderMutation();
+
+	//const [trigger, { data, isFetching, error }] = apiSlice.useLazyGet
+
 	const makeOrder = useCallback(
 		(e: SyntheticEvent) => {
 			e.preventDefault();
@@ -42,16 +33,36 @@ const ButtonOrder = (): React.JSX.Element => {
 				//here will be the query to server in future sprints
 				if (!orderIngredients || orderIngredients.length === 0) {
 					dispatch(
-						loadModal(
-							'order',
-							'Ошибка заказа',
-							<Error text='Добавьте хотя бы один ингредиент' height={false} />,
-							'popup'
-						)
+						showModal({
+							modalType: 'order',
+							modalHeader: 'Ошибка заказа',
+							modalContent: {
+								type: 'error',
+								text: 'Добавьте хотя бы один ингредиент',
+							},
+						})
 					);
+					dispatch(showPopupModal());
 				} else {
-					dispatch(loadModal('order', '', <Loader />, 'popup'));
-					dispatch(order(orderIngredients, <OrderDetails />));
+					dispatch(
+						showModal({
+							modalType: 'order',
+							modalHeader: '',
+							modalContent: { type: 'order' },
+						})
+					);
+					dispatch(showPopupModal());
+					order({
+						ingredients: orderIngredients,
+					}).then((response) => {
+						if (
+							!response.error &&
+							typeof response.data !== 'undefined' &&
+							typeof response.data !== 'string'
+						) {
+							dispatch(addOrderInfo({ orderInfo: response.data }));
+						}
+					});
 				}
 			}
 		},
