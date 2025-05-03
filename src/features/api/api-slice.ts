@@ -1,8 +1,4 @@
-import {
-	BaseQueryArg,
-	createApi,
-	fetchBaseQuery,
-} from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
 	IOrdersList,
 	TIngredient,
@@ -12,7 +8,6 @@ import {
 import { loadOrders, loadPrivateOrders } from '../order';
 import { AppDispatch } from '../../app/store-types';
 import { logout as logoutAuth } from '../auth';
-import orderSlice from '../order';
 
 const baseUrl = 'https://norma.nomoreparties.space/api';
 type TRefreshData = {
@@ -26,32 +21,26 @@ const checkResponse = <Param>(res: Response): Promise<Param> => {
 };
 
 const refreshToken = (): Promise<TRefreshData> => {
-	return (
-		fetch(`${baseUrl}/auth/token`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8',
-			},
-			body: JSON.stringify({
-				token: localStorage.getItem('refreshToken'),
-			}),
-		})
-			.then(checkResponse<TRefreshData>)
-			// !! Важно для обновления токена в мидлваре, чтобы запись токенов
-			// была тут, а не в fetchWithRefresh
-			.then(
-				(
-					refreshData: TRefreshData
-				): TRefreshData | PromiseLike<TRefreshData> => {
-					if (!refreshData.success) {
-						return Promise.reject(refreshData);
-					}
-					localStorage.setItem('refreshToken', refreshData.refreshToken);
-					localStorage.setItem('accessToken', refreshData.accessToken);
-					return refreshData;
+	return fetch(`${baseUrl}/auth/token`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json;charset=utf-8',
+		},
+		body: JSON.stringify({
+			token: localStorage.getItem('refreshToken'),
+		}),
+	})
+		.then(checkResponse<TRefreshData>)
+		.then(
+			(refreshData: TRefreshData): TRefreshData | PromiseLike<TRefreshData> => {
+				if (!refreshData.success) {
+					return Promise.reject(refreshData);
 				}
-			)
-	);
+				localStorage.setItem('refreshToken', refreshData.refreshToken);
+				localStorage.setItem('accessToken', refreshData.accessToken);
+				return refreshData;
+			}
+		);
 };
 
 export const apiSlice = createApi({
@@ -145,21 +134,13 @@ export const apiSlice = createApi({
 				}),
 				async onCacheEntryAdded(
 					data,
-					{
-						cacheDataLoaded,
-						cacheEntryRemoved,
-						dispatch /*, updateCachedData*/,
-					}
+					{ cacheDataLoaded, cacheEntryRemoved, dispatch }
 				) {
 					try {
 						await cacheDataLoaded;
 						connect(dispatch);
 						await cacheEntryRemoved;
-					} catch {
-						// if cacheEntryRemoved resolved before cacheDataLoaded,
-						// cacheDataLoaded throws
-						//console.error('cacheDataLoaded error');
-					}
+					} catch {}
 				},
 			}),
 			getPrivateOrders: create.query<string, void>({
@@ -168,22 +149,13 @@ export const apiSlice = createApi({
 				}),
 				async onCacheEntryAdded(
 					data,
-					{
-						cacheDataLoaded,
-						cacheEntryRemoved,
-						dispatch,
-						/*, updateCachedData*/
-					}
+					{ cacheDataLoaded, cacheEntryRemoved, dispatch }
 				) {
 					try {
 						await cacheDataLoaded;
 						connectPrivate(dispatch);
 						await cacheEntryRemoved;
-					} catch {
-						// if cacheEntryRemoved resolved before cacheDataLoaded,
-						// cacheDataLoaded throws
-						//console.error('cacheDataLoaded error');
-					}
+					} catch {}
 				},
 			}),
 			getOrderInfo: create.query<
@@ -204,22 +176,12 @@ function connect(dispatch: AppDispatch) {
 	};
 
 	ws.onclose = function (event: CloseEvent) {
-		if (event.wasClean) {
-			/*console.error(
-				`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
-			);*/
-		} else {
-			// например, сервер убил процесс или сеть недоступна
-			// обычно в этом случае event.code 1006
-			//console.error('[close] Соединение прервано');
-		}
 		setTimeout(function () {
 			connect(dispatch);
 		}, 1000);
 	};
 
 	ws.onerror = function (error: Event) {
-		//console.error(`Socket encountered error: [${error}] Closing socket`);
 		ws.close();
 	};
 }
@@ -234,11 +196,11 @@ async function connectPrivate(dispatch: AppDispatch) {
 		const data: WebSocketResponse<IOrdersList> | undefined = JSON.parse(
 			event.data
 		);
-		if (data && data.success && data.success === true) {
+		if (data && data.success && data.success) {
 			dispatch(loadPrivateOrders({ orders: data }));
 		} else if (
 			data &&
-			data.success === false &&
+			!data.success &&
 			data?.message === 'Invalid or missing token'
 		) {
 			if (
@@ -264,22 +226,12 @@ async function connectPrivate(dispatch: AppDispatch) {
 	};
 
 	ws.onclose = function (event: CloseEvent) {
-		if (event.wasClean) {
-			/*console.error(
-				`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
-			);*/
-		} else {
-			// например, сервер убил процесс или сеть недоступна
-			// обычно в этом случае event.code 1006
-			//console.error('[close] Соединение прервано');
-		}
 		setTimeout(function () {
 			connectPrivate(dispatch);
 		}, 1000);
 	};
 
 	ws.onerror = function (error: Event) {
-		//console.error(`Socket encountered error: [${error}] Closing socket`);
 		ws.close();
 	};
 }

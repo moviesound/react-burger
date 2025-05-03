@@ -7,38 +7,18 @@ import { useSelector } from '../../app/hooks';
 
 const CommonOrderFeed = (): React.JSX.Element => {
 	const [height, setHeight] = useState<number>(0);
-	const [content, setContent] = useState<React.JSX.Element | undefined>(
-		undefined
-	);
 	const location = useLocation();
 	apiSlice.useGetOrdersQuery();
 	const orders = useSelector((state) => state.order.orders);
-	useEffect(() => {
-		let c: React.JSX.Element | undefined = undefined;
-		if (orders) {
-			c = (
-				<>
-					{orders.map((order, index) => {
-						return (
-							<Link
-								to={`/feed/${order?.number}`}
-								state={{ background: location }}
-								className={styles.ref}
-								key={index}>
-								<FeedOrder orderData={order} />
-							</Link>
-						);
-					})}
-				</>
-			);
-		}
-		setContent(c);
-	}, [orders]);
+
+	//resizer
+	const onResizeWindow = () => {
+		if (!feedContentRef.current) return;
+		const contentPosition = feedContentRef.current.getBoundingClientRect();
+		setHeight(window.innerHeight - Math.ceil(contentPosition.top) - 50);
+	};
 
 	//add listner on resizing
-	useBeforeUnload((): void => {
-		window.removeEventListener('resize', onResizeWindow);
-	});
 	useEffect(() => {
 		window.addEventListener('resize', onResizeWindow);
 
@@ -49,13 +29,7 @@ const CommonOrderFeed = (): React.JSX.Element => {
 				window.removeEventListener('resize', onResizeWindow);
 			}
 		};
-	}, []);
-	//resizer
-	const onResizeWindow = () => {
-		if (!feedContentRef.current) return;
-		const contentPosition = feedContentRef.current.getBoundingClientRect();
-		setHeight(window.innerHeight - Math.ceil(contentPosition.top) - 50);
-	};
+	}, [onResizeWindow]);
 
 	const feedContentRef = React.useRef<HTMLDivElement>(null);
 
@@ -70,7 +44,18 @@ const CommonOrderFeed = (): React.JSX.Element => {
 					height: height,
 				}}
 				className={`custom-scroll ${styles.scrollerStyle}`}>
-				{content}
+				{orders &&
+					orders.map((order, index) => {
+						return (
+							<Link
+								to={`/feed/${order?.number}`}
+								state={{ background: location }}
+								className={styles.ref}
+								key={index}>
+								<FeedOrder orderData={order} />
+							</Link>
+						);
+					})}
 			</div>
 		</>
 	);

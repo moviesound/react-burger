@@ -45,44 +45,29 @@ const Statistics = (): React.JSX.Element => {
 					<div className='text_type_main-medium'>Готовы:</div>
 					<div className={styles.orderQueueGroup}>
 						<div className={styles.orderQueueList} ref={firstReadyOrderColumn}>
-							{ordersNums &&
-								ordersNums.readyOrders &&
-								ordersNums.readyOrders.length > 0 &&
-								ordersNums.readyOrders.map(
-									(number: number | string, index: number) => {
-										if (index <= 9) {
-											return (
-												<div
-													key={index}
-													className='text_type_digits-default text_color_success'>
-													{number}
-												</div>
-											);
-										} else {
-											return '';
-										}
-									}
-								)}
+							{ordersNums?.readyOrders?.map(
+								(number, index) =>
+									index <= 9 && (
+										<div
+											key={index}
+											className='text_type_digits-default text_color_success'>
+											{number}
+										</div>
+									)
+							)}
 						</div>
 						<div className={styles.orderQueueList} ref={secondReadyOrderColumn}>
-							{ordersNums &&
-								ordersNums.readyOrders &&
-								ordersNums.readyOrders.length > 0 &&
-								ordersNums.readyOrders.map(
-									(number: number | string, index: number) => {
-										if (index >= 10 && index <= 19) {
-											return (
-												<div
-													key={index}
-													className='text_type_digits-default text_color_success'>
-													{number}
-												</div>
-											);
-										} else {
-											return '';
-										}
-									}
-								)}
+							{ordersNums?.readyOrders?.map(
+								(number, index) =>
+									index >= 10 &&
+									index <= 19 && (
+										<div
+											key={index}
+											className='text_type_digits-default text_color_success'>
+											{number}
+										</div>
+									)
+							)}
 						</div>
 					</div>
 				</div>
@@ -92,42 +77,27 @@ const Statistics = (): React.JSX.Element => {
 						<div
 							className={styles.orderQueueList}
 							ref={firstPendingOrderColumn}>
-							{ordersNums &&
-								ordersNums.pendingOrders &&
-								ordersNums.pendingOrders.length > 0 &&
-								ordersNums.pendingOrders.map(
-									(number: number | string, index: number) => {
-										if (index <= 9) {
-											return (
-												<div key={index} className='text_type_digits-default'>
-													{number}
-												</div>
-											);
-										} else {
-											return '';
-										}
-									}
-								)}
+							{ordersNums?.pendingOrders?.map(
+								(number, index) =>
+									index <= 9 && (
+										<div key={index} className='text_type_digits-default'>
+											{number}
+										</div>
+									)
+							)}
 						</div>
 						<div
 							className={styles.orderQueueList}
 							ref={secondPendingOrderColumn}>
-							{ordersNums &&
-								ordersNums.pendingOrders &&
-								ordersNums.pendingOrders.length > 0 &&
-								ordersNums.pendingOrders.map(
-									(number: number | string, index: number) => {
-										if (index >= 10 && index <= 19) {
-											return (
-												<div key={index} className='text_type_digits-default'>
-													{number}
-												</div>
-											);
-										} else {
-											return '';
-										}
-									}
-								)}
+							{ordersNums?.pendingOrders?.map(
+								(number, index) =>
+									index >= 10 &&
+									index <= 19 && (
+										<div key={index} className='text_type_digits-default'>
+											{number}
+										</div>
+									)
+							)}
 						</div>
 					</div>
 				</div>
