@@ -38,7 +38,7 @@ const AppHeader = (): React.JSX.Element => {
 											? `${appStyles.ref} ${appStyles.isActive}`
 											: `${appStyles.ref} text_color_inactive`
 									}
-									to='/orders'>
+									to='/feed'>
 									{({ isActive }) => (
 										<>
 											<ListIcon type={isActive ? 'primary' : 'secondary'} />

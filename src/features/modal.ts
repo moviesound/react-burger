@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { TIngredient } from './types/types';
 
 interface IModalState {
 	modalIsVisible: boolean;
 	modalType?: string;
-	modalHeader?: string;
+	modalHeader?: string | number;
 	modalContent?: { type: string; text?: string };
+	list: TIngredient[];
 }
 
 interface IModalActions {
 	modalType?: string;
-	modalHeader?: string;
+	modalHeader?: string | number;
 	modalContent?: { type: string; text?: string };
+	list?: TIngredient[];
 }
 
 const initialState: IModalState = {
@@ -18,12 +21,18 @@ const initialState: IModalState = {
 	modalType: undefined,
 	modalHeader: '',
 	modalContent: undefined,
+	list: [],
 };
 
 const modalSlice = createSlice({
 	name: 'modal',
 	initialState,
 	reducers: {
+		saveList: (state, action: PayloadAction<IModalActions>) => {
+			if (action.payload.list) {
+				state.list = action.payload.list;
+			}
+		},
 		hideModal(state) {
 			state.modalType = undefined;
 			state.modalHeader = '';
@@ -53,6 +62,7 @@ export const {
 	showPopupModal,
 	hidePopupModal,
 	loadContent,
+	saveList,
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

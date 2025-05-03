@@ -1,10 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TIngredient, TOrder } from './types/types';
+import {
+	TIngredient,
+	TOrder,
+	IOrdersList,
+	WebSocketResponse,
+} from './types/types';
 
 interface IOrderState {
 	order?: TOrder;
+	orders?: Array<IOrdersList>;
+	privateOrders?: Array<IOrdersList>;
 	orderIngredients?: Array<string>;
 	bunWasAdded: false | string;
+	totalOrdersCount: number;
+	todayOrdersCount: number;
+	isRefreshing: boolean;
+	orderModalInfo: IOrdersList | null;
 }
 
 interface IOrderActions {
@@ -14,12 +25,22 @@ interface IOrderActions {
 	bunIds?: Array<string>;
 	index?: number;
 	orderInfo?: TOrder;
+	orderModalInfo?: IOrdersList | null;
+	orders?: WebSocketResponse<IOrdersList>;
+	privateOrders?: WebSocketResponse<IOrdersList>;
+	total?: number;
+	totalToday?: number;
+	isRefreshing?: boolean;
 }
 
 const initialState: IOrderState = {
 	order: undefined,
 	orderIngredients: undefined,
 	bunWasAdded: false,
+	totalOrdersCount: 0,
+	todayOrdersCount: 0,
+	isRefreshing: false,
+	orderModalInfo: null,
 };
 
 const orderSlice = createSlice({
@@ -110,6 +131,22 @@ const orderSlice = createSlice({
 						  ];
 			}
 		},
+		loadOrders(state, action: PayloadAction<IOrderActions>) {
+			state.orders = action.payload.orders?.orders;
+			state.todayOrdersCount = action.payload.orders?.totalToday ?? 0;
+			state.totalOrdersCount = action.payload.orders?.total ?? 0;
+		},
+		loadPrivateOrders(state, action: PayloadAction<IOrderActions>) {
+			state.privateOrders = action.payload.orders?.orders;
+		},
+		showOrderInfo(state, action: PayloadAction<IOrderActions>) {
+			if (action.payload.orderModalInfo) {
+				state.orderModalInfo = action.payload.orderModalInfo;
+			}
+		},
+		hideOrderInfo(state) {
+			state.orderModalInfo = null;
+		},
 	},
 });
 
@@ -119,6 +156,10 @@ export const {
 	removeIngredientFromOrder,
 	sortIngredients,
 	addOrderInfo,
+	loadOrders,
+	loadPrivateOrders,
+	showOrderInfo,
+	hideOrderInfo,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

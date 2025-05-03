@@ -12,6 +12,10 @@ export type TIngredientProps = {
 	ingredient: TIngredient;
 };
 
+export type TIngredientListProps = {
+	orderData: IOrdersList;
+};
+
 export type TProtectedRouteProps = {
 	isAuthorized?: boolean;
 	component: React.JSX.Element;
@@ -26,19 +30,40 @@ export type LoaderProps = {
 	simple?: boolean;
 };
 
+export interface IOrdersList {
+	ingredients: string[];
+	_id: string;
+	name: string;
+	status: string;
+	number: number | string;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface WebSocketResponse<OrderList> {
+	success: boolean;
+	orders: Array<OrderList>;
+	total: number;
+	totalToday: number;
+	message?: string;
+}
+
 export type TProfileMenuProps = {
 	item: string;
+	description: React.ReactNode;
 };
 
 export type TModalProps = {
 	closeBtnRef: LegacyRef<HTMLDivElement>;
 	overlayRef: LegacyRef<HTMLDivElement>;
 	modalRef: LegacyRef<HTMLDivElement>;
+	onClose: () => void;
 };
 
 export type TModalOverlay = {
 	children: React.ReactNode;
 	overlayRef: LegacyRef<HTMLDivElement>;
+	onClose: () => void;
 };
 
 export type TModalRouter = {

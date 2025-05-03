@@ -1,0 +1,91 @@
+.doneOrderDetails {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;;
+}
+
+.status {
+	padding-top: calc(var(--offset-base-size) * 3);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.ingredientsTitle {
+	padding-top: calc(var(--offset-base-size) * 15);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.scroll {
+	height: calc(var(--offset-base-size) * 85);
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+.sum{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	gap: calc(var(--offset-base-size) * 3);
+}
+.orderSumTime{
+	width: 100%;
+	padding-top: calc(var(--offset-base-size) * 10);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: calc(var(--offset-base-size) * 4);
+}
+.ingredientsList {
+	padding-top: calc(var(--offset-base-size) * 6);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+	gap: calc(var(--offset-base-size) * 4);
+
+}
+.ingredient {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	height: calc(var(--offset-base-size) * 16);
+	overflow: hidden;
+}
+.ingredientIcon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: calc(var(--offset-base-size) * 16);
+	border: 1px solid #58316c;
+	border-radius: var(--common-border-radius);
+}
+.ingredientIconImg {
+	width: calc(var(--offset-base-size) * 16);
+	height: calc(var(--offset-base-size) * 16);
+}
+.ingredientDescription {
+	height: calc(var(--offset-base-size) * 16);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 0 calc(var(--offset-base-size) * 4);
+	width: 400px;
+}
+.ingredientSum{
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: center;
+	width: 150px;
+}

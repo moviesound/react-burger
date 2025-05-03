@@ -1,0 +1,10 @@
+.container {
+	padding-top: calc(var(--offset-base-size) * 25);
+}
+.number{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: calc(var(--offset-base-size) * 10);
+}

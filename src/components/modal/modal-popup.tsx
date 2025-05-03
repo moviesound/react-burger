@@ -104,6 +104,9 @@ const ModalPopup = (): React.JSX.Element => {
 			closeBtnRef={closeBtnRef}
 			overlayRef={overlayRef}
 			modalRef={modalRef}
+			onClose={() => {
+				return;
+			}}
 		/>
 	);
 };

@@ -13,9 +13,6 @@ import { setUser } from '../../features/auth';
 import Error from '../../components/error/error';
 
 const ProfilePage = (): React.JSX.Element => {
-	/*const user: TUser = useSelector(
-		(state: TAppState): TUser => state.authReducer.user
-	);*/
 	const dispatch = useDispatch();
 	const user = useSelector((state) => state.auth.user);
 	const [emailField, setEmailField] = React.useState<string>(
@@ -76,21 +73,20 @@ const ProfilePage = (): React.JSX.Element => {
 				);
 			}
 		});
-		/*
-				dispatch(
-					saveUser(
-						user && user.email && emailField !== user.email ? emailField : null,
-						user && user.name && nameField !== user.name ? nameField : null,
-						passwordField !== '' ? passwordField : null
-					)
-				);*/
 	};
+	const description = (
+		<span>
+			В этом разделе вы можете
+			<br />
+			изменить свои персональные данные
+		</span>
+	);
 	const errorText = useSelector((state) => state.profile.errorText);
 	return (
 		<div className={style.container}>
 			<section className={style.content}>
 				<div className={style.leftBox}>
-					<ProfileMenu item='profile' />
+					<ProfileMenu item='profile' description={description} />
 				</div>
 				<form className={style.rightBox} onSubmit={saveParams}>
 					<Input

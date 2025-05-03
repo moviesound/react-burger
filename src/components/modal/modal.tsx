@@ -9,11 +9,13 @@ import IngredientDetails from './ingredient-details/ingredient-details';
 import Error from '../error/error';
 import Loader from '../loader/loader';
 import OrderDetails from './order-details/order-details';
+import DoneOrderDetails from './done-order-details/done-order-details';
 
 const Modal = ({
 	closeBtnRef,
 	overlayRef,
 	modalRef,
+	onClose,
 }: TModalProps): React.JSX.Element => {
 	const modalHeader = useSelector((state) => {
 		return state.modal.modalHeader;
@@ -24,20 +26,38 @@ const Modal = ({
 	});
 
 	return createPortal(
-		<ModalOverlay overlayRef={overlayRef}>
-			<div className={styles.modal} ref={modalRef}>
-				<h2 className={`${styles.header} text text_type_main-large`}>
-					{modalHeader}
-					<div className={styles.close} ref={closeBtnRef}>
-						<CloseIcon type='primary' />
-					</div>
-				</h2>
-				<div className={styles.content}>
+		<ModalOverlay overlayRef={overlayRef} onClose={onClose}>
+			<div
+				role='presentation'
+				className={styles.modal}
+				ref={modalRef}
+				onClick={(e) => {
+					e.stopPropagation();
+				}}>
+				{typeof modalContent !== 'undefined' &&
+				modalContent.type === 'orderDetails' ? (
+					<h2 className={`${styles.header} text text_type_digits-default`}>
+						{modalHeader}
+						<div className={styles.close} ref={closeBtnRef}>
+							<CloseIcon type='primary' onClick={onClose} />
+						</div>
+					</h2>
+				) : (
+					<h2 className={`${styles.header} text text_type_main-large`}>
+						{modalHeader}
+						<div className={styles.close} ref={closeBtnRef}>
+							<CloseIcon type='primary' onClick={onClose} />
+						</div>
+					</h2>
+				)}
+				<div className={modalContent && modalContent.type === 'orderDetails' ? styles.orderDetails : styles.content}>
 					{typeof modalContent !== 'undefined' ? (
 						modalContent.type === 'ingredient' ? (
 							<IngredientDetails />
 						) : modalContent.type === 'order' ? (
 							<OrderDetails />
+						) : modalContent.type === 'orderDetails' ? (
+							<DoneOrderDetails />
 						) : modalContent.type === 'error' ? (
 							<Error text='Добавьте хотя бы один ингредиент' height={false} />
 						) : modalContent.type === 'loader' ? (

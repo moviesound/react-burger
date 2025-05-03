@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Modal from './modal';
 import { useSelector, useDispatch } from '../../app/hooks';
-import PropTypes from 'prop-types';
-import { useParams } from 'react-router';
+import { useBeforeUnload, useParams } from 'react-router';
 import { TModalRouter } from '../../features/types/types';
 import { showModal } from '../../features/modal';
 
@@ -17,6 +16,7 @@ const ModalRouter = ({ onClose }: TModalRouter): React.JSX.Element => {
 
 	//modal info for ingredient
 	const { ingredientId } = useParams();
+	const { number } = useParams();
 	useEffect(() => {
 		if (ingredientId) {
 			//dispatch(downloadIngredient(ingredientId));
@@ -29,28 +29,25 @@ const ModalRouter = ({ onClose }: TModalRouter): React.JSX.Element => {
 				})
 			);
 		}
+		if (number) {
+			//dispatch(downloadIngredient(ingredientId));
+			//here will be the query to server in future sprints
+			dispatch(
+				showModal({
+					modalType: 'route',
+					modalHeader: number ? '#' + number : '',
+					modalContent: { type: 'orderDetails' },
+				})
+			);
+		}
 	}, [ingredientId, dispatch]);
 
+	useBeforeUnload(() => {
+		//esc key
+		document.removeEventListener('keydown', closeModalEsc);
+	});
 	//addlistener close
 	useEffect(() => {
-		//add close Modal listeners
-		//close button
-		closeBtnRef.current?.addEventListener('click', (): void => {
-			onClose();
-			/*if (modalType === 'ingredient' || ingredientId) {
-				dispatch({ type: 'CLEAR_INGREDIENT' });
-			}*/
-		});
-		//click on overlay
-		overlayRef.current?.addEventListener('click', (): void => {
-			onClose();
-			/*if (modalType === 'ingredient' || ingredientId) {
-				dispatch({ type: 'CLEAR_INGREDIENT' });
-			}*/
-		});
-		modalRef.current?.addEventListener('click', (event: MouseEvent): void => {
-			event.stopPropagation();
-		});
 		//esc key
 		document.addEventListener('keydown', closeModalEsc);
 		return () => {
@@ -78,12 +75,9 @@ const ModalRouter = ({ onClose }: TModalRouter): React.JSX.Element => {
 			closeBtnRef={closeBtnRef}
 			overlayRef={overlayRef}
 			modalRef={modalRef}
+			onClose={onClose}
 		/>
 	);
-};
-
-ModalRouter.propTypes = {
-	onClose: PropTypes.func,
 };
 
 export default ModalRouter;

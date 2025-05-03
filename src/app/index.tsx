@@ -20,6 +20,8 @@ import Page404 from '../pages/404/404';
 import { apiDefendedSlice } from '../features/api/api-defended-slice';
 import { useDispatch } from '../app/hooks';
 import { authChecked, setUser } from '../features/auth';
+import OrderDetailsPage from '../pages/orders-details/orders-details';
+import Feed from '../pages/feed/feed';
 
 export const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();
@@ -27,7 +29,7 @@ export const App = (): React.JSX.Element => {
 	const navigate = useNavigate();
 	const background = location.state && location.state.background;
 	const handleModalClose = (): void => {
-		navigate('/');
+		navigate(-1);
 	};
 	const { data, isLoading, isSuccess } = apiDefendedSlice.useGetUserQuery();
 	useEffect(() => {
@@ -46,6 +48,8 @@ export const App = (): React.JSX.Element => {
 				<Route path='/ingredients/'>
 					<Route path=':ingredientId' element={<IngredientDetailsPage />} />
 				</Route>
+				<Route path='/feed/' element={<Feed />}></Route>
+				<Route path='/feed/:number' element={<OrderDetailsPage />} />
 				<Route
 					path='/register'
 					element={<OnlyUnauthorized component={<RegisterPage />} />}
@@ -78,6 +82,12 @@ export const App = (): React.JSX.Element => {
 					<Route path='/ingredients/'>
 						<Route
 							path=':ingredientId'
+							element={<ModalRouter onClose={handleModalClose} />}
+						/>
+					</Route>
+					<Route path='/feed/'>
+						<Route
+							path=':number'
 							element={<ModalRouter onClose={handleModalClose} />}
 						/>
 					</Route>

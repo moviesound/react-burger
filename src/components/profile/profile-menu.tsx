@@ -6,7 +6,10 @@ import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { apiSlice } from '../../features/api/api-slice';
 import { apiDefendedSlice } from '../../features/api/api-defended-slice';
 
-const ProfileMenu = ({ item }: TProfileMenuProps): React.JSX.Element => {
+const ProfileMenu = ({
+	item,
+	description,
+}: TProfileMenuProps): React.JSX.Element => {
 	const [logout] = apiSlice.useLazyLogoutQuery();
 	const [updateUser] = apiDefendedSlice.useLazyGetUserQuery();
 	const logoutHandler = (): void => {
@@ -46,9 +49,7 @@ const ProfileMenu = ({ item }: TProfileMenuProps): React.JSX.Element => {
 			</Button>
 			<div
 				className={`${style.description} text text_color_inactive text_type_main-default`}>
-				В этом разделе вы можете
-				<br />
-				изменить свои персональные данные
+				{description}
 			</div>
 		</>
 	);

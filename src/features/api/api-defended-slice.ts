@@ -35,7 +35,7 @@ const baseQueryWithReauth: BaseQueryFn<
 	unknown,
 	FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-	const { dispatch, getState } = api;
+	const { dispatch } = api;
 	if (
 		!localStorage.getItem('accessToken') &&
 		!localStorage.getItem('refreshToken')
@@ -47,7 +47,6 @@ const baseQueryWithReauth: BaseQueryFn<
 	}
 
 	let result = await baseQuery(args, api, extraOptions);
-	console.log('result', result);
 	if (
 		result.error &&
 		result.error.data &&
@@ -81,7 +80,6 @@ const baseQueryWithReauth: BaseQueryFn<
 				)
 			)
 				.then((refreshResult) => {
-					console.log('refresh');
 					if (refreshResult.data) {
 						const refreshTokenResult = refreshResult.data as TRefreshData;
 
