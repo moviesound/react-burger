@@ -1,55 +1,53 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Modal from './modal';
-import { loadModal } from '../../services/actions/modal';
-import { useSelector, useDispatch } from '../../services/store';
-import PropTypes from 'prop-types';
-import { useParams } from 'react-router';
-import { downloadIngredient } from '@services/actions/ingredient';
-import IngredientDetails from './ingredient-details/ingredient-details';
-import { TAppState, TModalRouter } from '../../utils/types';
+import { useSelector, useDispatch } from '../../app/hooks';
+import { useBeforeUnload, useParams } from 'react-router';
+import { TModalRouter } from '../../features/types/types';
+import { showModal } from '../../features/modal';
 
 const ModalRouter = ({ onClose }: TModalRouter): React.JSX.Element => {
 	const dispatch = useDispatch();
 	const closeBtnRef = useRef<HTMLDivElement>(null);
 	const overlayRef = useRef<HTMLDivElement>(null);
 	const modalRef = useRef<HTMLDivElement>(null);
-	const modalType: string | undefined | null = useSelector(
-		(state: TAppState): string | undefined | null => {
-			return state.modalReducer.modalType;
-		}
-	);
+	const modalType = useSelector((state) => {
+		return state.modal.modalType;
+	});
 
 	//modal info for ingredient
 	const { ingredientId } = useParams();
+	const { number } = useParams();
 	useEffect(() => {
 		if (ingredientId) {
-			dispatch(downloadIngredient(ingredientId));
+			//dispatch(downloadIngredient(ingredientId));
 			//here will be the query to server in future sprints
-			const content = <IngredientDetails />;
-			dispatch(loadModal('ingredient', 'Детали ингредиента', content, 'route'));
+			dispatch(
+				showModal({
+					modalType: 'route',
+					modalHeader: 'Детали ингредиента',
+					modalContent: { type: 'ingredient' },
+				})
+			);
+		}
+		if (number) {
+			//dispatch(downloadIngredient(ingredientId));
+			//here will be the query to server in future sprints
+			dispatch(
+				showModal({
+					modalType: 'route',
+					modalHeader: number ? '#' + number : '',
+					modalContent: { type: 'orderDetails' },
+				})
+			);
 		}
 	}, [ingredientId, dispatch]);
 
+	useBeforeUnload(() => {
+		//esc key
+		document.removeEventListener('keydown', closeModalEsc);
+	});
 	//addlistener close
 	useEffect(() => {
-		//add close Modal listeners
-		//close button
-		closeBtnRef.current?.addEventListener('click', (): void => {
-			onClose();
-			if (modalType === 'ingredient' || ingredientId) {
-				dispatch({ type: 'CLEAR_INGREDIENT' });
-			}
-		});
-		//click on overlay
-		overlayRef.current?.addEventListener('click', (): void => {
-			onClose();
-			if (modalType === 'ingredient' || ingredientId) {
-				dispatch({ type: 'CLEAR_INGREDIENT' });
-			}
-		});
-		modalRef.current?.addEventListener('click', (event: MouseEvent): void => {
-			event.stopPropagation();
-		});
 		//esc key
 		document.addEventListener('keydown', closeModalEsc);
 		return () => {
@@ -66,9 +64,9 @@ const ModalRouter = ({ onClose }: TModalRouter): React.JSX.Element => {
 		//close modal at esc
 		if (e.key === 'Escape') {
 			onClose();
-			if (modalType === 'ingredient' || ingredientId) {
+			/*if (modalType === 'ingredient' || ingredientId) {
 				dispatch({ type: 'CLEAR_INGREDIENT' });
-			}
+			}*/
 		}
 	};
 
@@ -77,12 +75,9 @@ const ModalRouter = ({ onClose }: TModalRouter): React.JSX.Element => {
 			closeBtnRef={closeBtnRef}
 			overlayRef={overlayRef}
 			modalRef={modalRef}
+			onClose={onClose}
 		/>
 	);
-};
-
-ModalRouter.propTypes = {
-	onClose: PropTypes.func,
 };
 
 export default ModalRouter;

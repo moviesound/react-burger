@@ -5,7 +5,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { TIngredient } from '../../../utils/types';
+import { TIngredient } from '../../../features/types/types';
 
 type TConstructorIngredient = {
 	index: number;
