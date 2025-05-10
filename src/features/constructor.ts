@@ -16,7 +16,7 @@ interface IConstructorActions {
 	ingredients?: TIngredient[];
 }
 
-const initialState: IConstructorState = {
+export const initialState: IConstructorState = {
 	ingredientList: [],
 	bun: undefined,
 	sum: 0,

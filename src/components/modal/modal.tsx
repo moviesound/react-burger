@@ -28,6 +28,7 @@ const Modal = ({
 	return createPortal(
 		<ModalOverlay overlayRef={overlayRef} onClose={onClose}>
 			<div
+				data-testid="modal"
 				role='presentation'
 				className={styles.modal}
 				ref={modalRef}
@@ -38,14 +39,14 @@ const Modal = ({
 				modalContent.type === 'orderDetails' ? (
 					<h2 className={`${styles.header} text text_type_digits-default`}>
 						{modalHeader}
-						<div className={styles.close} ref={closeBtnRef}>
+						<div className={styles.close} ref={closeBtnRef} data-testid="close-modal-btn">
 							<CloseIcon type='primary' onClick={onClose} />
 						</div>
 					</h2>
 				) : (
 					<h2 className={`${styles.header} text text_type_main-large`}>
 						{modalHeader}
-						<div className={styles.close} ref={closeBtnRef}>
+						<div className={styles.close} ref={closeBtnRef} data-testid="close-modal-btn">
 							<CloseIcon type='primary' onClick={onClose} />
 						</div>
 					</h2>

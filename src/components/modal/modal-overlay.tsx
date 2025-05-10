@@ -5,6 +5,7 @@ import { TModalOverlay } from '../../features/types/types';
 const ModalOverlay = (props: TModalOverlay): React.JSX.Element => {
 	return (
 		<div
+			data-testid='modal-overlay'
 			role='presentation'
 			className={styles.modalOverlay}
 			ref={props.overlayRef}

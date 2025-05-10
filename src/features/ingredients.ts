@@ -11,7 +11,7 @@ interface IIngredientsActions {
 	type?: string;
 }
 
-const initialState: IngredientsState = {
+export const initialState: IngredientsState = {
 	ingredients: undefined,
 };
 

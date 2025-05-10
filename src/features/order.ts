@@ -33,7 +33,7 @@ interface IOrderActions {
 	isRefreshing?: boolean;
 }
 
-const initialState: IOrderState = {
+export const initialState: IOrderState = {
 	order: undefined,
 	orderIngredients: undefined,
 	bunWasAdded: false,
@@ -144,9 +144,6 @@ const orderSlice = createSlice({
 				state.orderModalInfo = action.payload.orderModalInfo;
 			}
 		},
-		hideOrderInfo(state) {
-			state.orderModalInfo = null;
-		},
 	},
 });
 
@@ -159,7 +156,6 @@ export const {
 	loadOrders,
 	loadPrivateOrders,
 	showOrderInfo,
-	hideOrderInfo,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;
