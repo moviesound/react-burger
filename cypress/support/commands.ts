@@ -35,3 +35,25 @@
 //     }
 //   }
 // }
+
+Cypress.Commands.add('getByTestId', (selector) => {
+	return cy.get(`[data-testid="${selector}"]`);
+});
+
+Cypress.Commands.add('interceptIngredients', () => {
+	cy.intercept('GET', 'https://norma.nomoreparties.space/api/ingredients', {
+		fixture: 'ingredients',
+	});
+});
+
+Cypress.Commands.add('interceptUserAuth', () => {
+	cy.intercept('GET', 'https://norma.nomoreparties.space/api/auth/user', {
+		fixture: 'user',
+	});
+});
+
+Cypress.Commands.add('interceptOrder', () => {
+	cy.intercept('POST', 'https://norma.nomoreparties.space/api/orders', {
+		fixture: 'order',
+	}).as('getOrderInfo');
+});

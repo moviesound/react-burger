@@ -112,7 +112,7 @@ export const ConstructorIngredient = memo<TConstructorIngredient>(
 		const opacity = isDragging ? 0 : 1;
 		drag(drop(ref));
 		return (
-			<li ref={ref} style={{ opacity: opacity }}>
+			<li ref={ref} style={{ opacity: opacity }} data-testid='ingredient-in-constructor'>
 				<div className={styles.moveBox}>
 					<DragIcon type='primary' />
 				</div>
