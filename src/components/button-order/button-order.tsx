@@ -74,7 +74,7 @@ const ButtonOrder = (): React.JSX.Element => {
 			<div className={`${styles.sum} text text_type_digits-medium`}>
 				{sum} <CurrencyIcon type='primary' />
 			</div>
-			<span ref={button}>
+			<span ref={button} data-testid='make-order-btn'>
 				<Button
 					onClick={makeOrder}
 					htmlType='button'

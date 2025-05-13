@@ -13,7 +13,7 @@ interface IUser {
 	user: TUser;
 }
 
-const initialState: IAuthState = {
+export const initialState: IAuthState = {
 	user: null,
 	requestProcess: false,
 	requestFailed: false,
@@ -21,7 +21,7 @@ const initialState: IAuthState = {
 	isAuthChecked: false,
 };
 
-const authSlice = createSlice({
+export const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {

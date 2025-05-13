@@ -71,8 +71,11 @@ const Ingredient = ({ ingredient }: TIngredientProps): React.JSX.Element => {
 	}, [dispatch]);
 	return (
 		<li
+			data-testid="ingredientsUnique"
+			data-ingredient-type={ingredient?.type}
 			className={ingredientStyles.box}
 			ref={ingredientBox}
+			key={id}
 			style={{
 				MozOpacity: opacity,
 				KhtmlOpacity: opacity,

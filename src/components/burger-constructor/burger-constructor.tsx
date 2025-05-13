@@ -28,7 +28,10 @@ import {
 	removeIngredientFromOrder,
 	sortIngredients as sortIngredientsOrder,
 } from '../../features/order';
-import { addIngredientCount } from '../../features/ingredients';
+import {
+	addIngredientCount,
+	removeIngredientCount,
+} from '../../features/ingredients';
 
 type DragCollectedProps1 = {
 	isHoverTopBun: boolean;
@@ -256,6 +259,11 @@ const BurgerConstructor = (): React.JSX.Element => {
 					index: index,
 				})
 			);
+			dispatch(
+				removeIngredientCount({
+					ingredient: ingredient,
+				})
+			);
 		},
 		[dispatch, ingredientList]
 	);
@@ -284,8 +292,8 @@ const BurgerConstructor = (): React.JSX.Element => {
 		return (
 			<>
 				{bun ? (
-					<div className={`${styles.topIngredient}`} ref={bunTargetTop}>
-						<div
+					<div data-testid="topBunDrop" className={`${styles.topIngredient}`} ref={bunTargetTop}>
+						<div data-testid="top-bun-added"
 							className={`${bunSelectedTopClass} constructor-element_pos_top`}>
 							<ConstructorElement
 								type='top'
@@ -297,7 +305,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 						</div>
 					</div>
 				) : (
-					<div className={`${styles.topIngredient}`} ref={bunTargetTop}>
+					<div data-testid="topBunDrop" className={`${styles.topIngredient}`} ref={bunTargetTop}>
 						<div
 							className={`${bunSelectedTopClass} constructor-element constructor-element_pos_top`}>
 							<span className={classEmpty}>Выберите булки</span>
@@ -306,7 +314,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 				)}
 
 				{ingredientList && ingredientList.length > 0 ? (
-					<span ref={burgerConstructorContent}>
+					<span data-testid="ingerdientDrop" ref={burgerConstructorContent}>
 						<ul
 							className={`${styles.list} custom-scroll`}
 							ref={notBunTarget}
@@ -338,7 +346,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 						</ul>
 					</span>
 				) : (
-					<span ref={burgerConstructorContent}>
+					<span data-testid="ingerdientDrop" ref={burgerConstructorContent}>
 						<ul
 							className={`${styles.listEmpty}`}
 							ref={notBunTarget}
@@ -359,8 +367,8 @@ const BurgerConstructor = (): React.JSX.Element => {
 				)}
 
 				{bun ? (
-					<div className={`${styles.bottomIngredient}`} ref={bunTargetBottom}>
-						<div
+					<div data-testid="bottomBunDrop" className={`${styles.bottomIngredient}`} ref={bunTargetBottom}>
+						<div data-testid="bottom-bun-added"
 							className={`${bunSelectedBottomClass} constructor-element_pos_bottom`}>
 							<ConstructorElement
 								type='bottom'
@@ -373,6 +381,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 					</div>
 				) : (
 					<div
+						data-testid="bottomBunDrop"
 						className={`${styles.bottomIngredient} constructor-element_pos_bottom`}
 						ref={bunTargetBottom}>
 						<div

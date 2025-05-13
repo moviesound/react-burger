@@ -81,7 +81,7 @@ const ProfilePage = (): React.JSX.Element => {
 			изменить свои персональные данные
 		</span>
 	);
-	const errorText = useSelector((state) => state.profile.errorText);
+
 	return (
 		<div className={style.container}>
 			<section className={style.content}>
@@ -94,12 +94,10 @@ const ProfilePage = (): React.JSX.Element => {
 						type='text'
 						placeholder='Имя'
 						name='name'
-						error={!!errorText}
 						value={nameField}
 						onChange={(e) => {
 							setNameField(e.target.value);
 						}}
-						errorText={errorText}
 						size='default'
 					/>
 					<EmailInput
@@ -119,7 +117,6 @@ const ProfilePage = (): React.JSX.Element => {
 						placeholder='Пароль'
 						size='default'
 						extraClass='mb-2'
-						errorText={errorText}
 						value={passwordField}
 						onChange={(e) => {
 							setPasswordField(e.target.value);

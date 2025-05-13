@@ -16,7 +16,7 @@ interface IModalActions {
 	list?: TIngredient[];
 }
 
-const initialState: IModalState = {
+export const initialState: IModalState = {
 	modalIsVisible: false,
 	modalType: undefined,
 	modalHeader: '',
@@ -28,11 +28,6 @@ const modalSlice = createSlice({
 	name: 'modal',
 	initialState,
 	reducers: {
-		saveList: (state, action: PayloadAction<IModalActions>) => {
-			if (action.payload.list) {
-				state.list = action.payload.list;
-			}
-		},
 		hideModal(state) {
 			state.modalType = undefined;
 			state.modalHeader = '';
@@ -49,20 +44,10 @@ const modalSlice = createSlice({
 		hidePopupModal(state) {
 			state.modalIsVisible = false;
 		},
-		loadContent(state, action: PayloadAction<IModalActions>) {
-			state.modalContent =
-				state.modalIsVisible === true ? action.payload.modalContent : undefined;
-		},
 	},
 });
 
-export const {
-	hideModal,
-	showModal,
-	showPopupModal,
-	hidePopupModal,
-	loadContent,
-	saveList,
-} = modalSlice.actions;
+export const { hideModal, showModal, showPopupModal, hidePopupModal } =
+	modalSlice.actions;
 
 export default modalSlice.reducer;

@@ -23,7 +23,7 @@ const OrderDetails = () => {
 	}, [order]);
 	return order ? (
 		<div className={styles.container}>
-			<div className={`${styles.orderNumber} text text_type_digits-large`}>
+			<div className={`${styles.orderNumber} text text_type_digits-large`} data-testid="order-number">
 				{order.order.number}
 			</div>
 			<div className={`${styles.label} text text_type_main-medium`}>
