@@ -15,7 +15,6 @@ interface IUser {
 
 export const initialState: IAuthState = {
 	user: null,
-
 	requestProcess: false,
 	requestFailed: false,
 	errorText: undefined,
