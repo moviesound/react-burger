@@ -18,7 +18,7 @@ type TRefreshData = {
 const reducerPath = 'api-defended';
 
 const baseQuery = fetchBaseQuery({
-	baseUrl: 'https://norma.nomoreparties.space/api',
+	baseUrl: 'https://norma.education-services.ru/api',
 	prepareHeaders(headers) {
 		const token = localStorage.getItem('accessToken');
 

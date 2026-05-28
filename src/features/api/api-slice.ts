@@ -9,7 +9,7 @@ import { loadOrders, loadPrivateOrders } from '../order';
 import { AppDispatch } from '../../app/store-types';
 import { logout as logoutAuth } from '../auth';
 
-const baseUrl = 'https://norma.nomoreparties.space/api';
+const baseUrl = 'https://norma.education-services.ru/api';
 type TRefreshData = {
 	success: boolean;
 	refreshToken: string;
@@ -169,7 +169,7 @@ export const apiSlice = createApi({
 });
 
 function connect(dispatch: AppDispatch) {
-	const ws = new WebSocket('wss://norma.nomoreparties.space/orders/all');
+	const ws = new WebSocket('wss://norma.education-services.ru/orders/all');
 
 	ws.onmessage = function (event: MessageEvent<string>) {
 		dispatch(loadOrders({ orders: JSON.parse(event.data) }));
@@ -188,7 +188,7 @@ function connect(dispatch: AppDispatch) {
 
 async function connectPrivate(dispatch: AppDispatch) {
 	const ws = new WebSocket(
-		'wss://norma.nomoreparties.space/orders?token=' +
+		'wss://norma.education-services.ru/orders?token=' +
 			localStorage.getItem('accessToken')?.replace('Bearer ', '')
 	);
 	(window as any).myws = ws;
